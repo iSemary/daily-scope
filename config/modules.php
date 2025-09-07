@@ -13,7 +13,7 @@ return [
     | Default module namespace.
     |
     */
-    'namespace' => 'Modules',
+    'namespace' => 'modules',
 
     /*
     |--------------------------------------------------------------------------
@@ -85,7 +85,7 @@ return [
         | This path will also be added automatically to the list of scanned folders.
         |
         */
-        'modules' => base_path('Modules'),
+        'modules' => base_path('modules'),
 
         /*
         |--------------------------------------------------------------------------
@@ -160,11 +160,11 @@ return [
             'request' => ['path' => 'app/Http/Requests', 'generate' => false],
 
             // config/
-            'config' => ['path' => 'config', 'generate' => true],
+            'config' => ['path' => 'Config', 'generate' => true],
 
             // database/
             'factory' => ['path' => 'database/factories', 'generate' => true],
-            'migration' => ['path' => 'database/migrations', 'generate' => true],
+            'migration' => ['path' => 'Database/Migrations', 'generate' => true],
             'seeder' => ['path' => 'database/seeders', 'generate' => true],
 
             // lang/
@@ -176,7 +176,7 @@ return [
             'views' => ['path' => 'resources/views', 'generate' => true],
 
             // routes/
-            'routes' => ['path' => 'routes', 'generate' => true],
+            'routes' => ['path' => 'Routes', 'generate' => true],
 
             // tests/
             'test-feature' => ['path' => 'tests/Feature', 'generate' => true],
