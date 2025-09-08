@@ -17,6 +17,8 @@ class ArticlesResource extends JsonResource {
             'source' => new \modules\Source\Transformers\SourceResource($this->whenLoaded('source')),
             'author' => new \modules\Author\Transformers\AuthorResource($this->whenLoaded('author')),
             'category' => new \modules\Category\Transformers\CategoryResource($this->whenLoaded('category')),
+            'country' => new \modules\Country\Transformers\CountryResource($this->whenLoaded('country')),
+            'language' => new \modules\Language\Transformers\LanguageResource($this->whenLoaded('language')),
         ];
     }
 }

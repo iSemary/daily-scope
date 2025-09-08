@@ -24,6 +24,14 @@ class Article extends Model {
         return $this->belongsTo(\modules\Category\Entities\Category::class);
     }
 
+    public function country() {
+        return $this->belongsTo(\modules\Country\Entities\Country::class);
+    }
+
+    public function language() {
+        return $this->belongsTo(\modules\Language\Entities\Language::class);
+    }
+
     public function scopeBySourceAndArticleSlug(Builder $query, string $sourceSlug, string $articleSlug): Builder {
         return $query->join('sources', 'sources.id', 'articles.source_id')
             ->where('sources.slug', $sourceSlug)
@@ -47,6 +55,12 @@ class Article extends Model {
             },
             'category' => function ($query) {
                 $query->select('id', 'title', 'slug');
+            },
+            'country' => function ($query) {
+                $query->select('id', 'name', 'code');
+            },
+            'language' => function ($query) {
+                $query->select('id', 'name', 'code');
             },
         ]);
     }

@@ -20,3 +20,9 @@ Route::group([], base_path('modules/Category/Routes/api.php'));
 
 // Article Module Routes
 Route::group([], base_path('modules/Article/Routes/api.php'));
+
+// Country Module Routes
+Route::group([], base_path('modules/Country/Routes/api.php'));
+
+// Language Module Routes
+Route::group([], base_path('modules/Language/Routes/api.php'));
