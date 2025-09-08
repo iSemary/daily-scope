@@ -28,8 +28,8 @@ class SourceController extends ApiController {
      * @return JsonResponse A JsonResponse object is being returned.
      */
     public function articles(string $sourceSlug): JsonResponse {
-        // Note: This method would need Article module to be implemented
-        // For now, returning a placeholder response
-        return $this->return(200, "Source articles functionality will be available when Article module is implemented", []);
+        $articles = \modules\Article\Entities\Article::withArticleRelations()->byRelatedItemSlug($sourceSlug, \App\Interfaces\ItemsInterface::SOURCE, \App\Interfaces\ItemsInterface::SOURCE_KEY)->paginate(20);
+        $articles = new \modules\Article\Transformers\ArticlesCollection($articles);
+        return $this->return(200, "Source articles fetched successfully", ['articles' => $articles]);
     }
 }

@@ -38,8 +38,8 @@ class CategoryController extends ApiController {
             return $this->return(400, "Category not found");
         }
         
-        // Note: This method would need Article module to be implemented
-        // For now, returning a placeholder response
-        return $this->return(200, "Category articles functionality will be available when Article module is implemented", []);
+        $articles = \modules\Article\Entities\Article::withArticleRelations()->byRelatedItemSlug($categorySlug, \App\Interfaces\ItemsInterface::CATEGORY, \App\Interfaces\ItemsInterface::CATEGORY_KEY)->paginate(20);
+        $articles = new \modules\Article\Transformers\ArticlesCollection($articles);
+        return $this->return(200, "Category articles fetched successfully", ['articles' => $articles]);
     }
 }
