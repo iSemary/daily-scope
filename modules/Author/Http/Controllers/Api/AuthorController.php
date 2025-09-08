@@ -33,8 +33,8 @@ class AuthorController extends ApiController {
      * @return JsonResponse A JsonResponse object is being returned.
      */
     public function articles(string $sourceSlug, string $authorSlug): JsonResponse {
-        // Note: This method would need Article module to be implemented
-        // For now, returning a placeholder response
-        return $this->return(200, "Author articles functionality will be available when Article module is implemented", []);
+        $articles = \modules\Article\Entities\Article::withArticleRelations()->bySourceAndAuthorSlug($sourceSlug, $authorSlug)->paginate(20);
+        $articles = new \modules\Article\Transformers\ArticlesCollection($articles);
+        return $this->return(200, "Author articles fetched successfully", ['articles' => $articles]);
     }
 }
