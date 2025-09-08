@@ -2,5 +2,8 @@
     "Author": true,
     "Category": true,
     "Source": true,
-    "Article": true
+    "Article": true,
+    "Country": true,
+    "Language": true,
+    "Provider": true
 }
