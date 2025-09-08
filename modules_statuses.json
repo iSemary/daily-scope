@@ -4,5 +4,6 @@
     "Source": true,
     "Article": true,
     "Country": true,
-    "Language": true
+    "Language": true,
+    "Provider": true
 }

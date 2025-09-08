@@ -32,6 +32,10 @@ class Article extends Model {
         return $this->belongsTo(\modules\Language\Entities\Language::class);
     }
 
+    public function provider() {
+        return $this->belongsTo(\modules\Provider\Entities\Provider::class);
+    }
+
     public function scopeBySourceAndArticleSlug(Builder $query, string $sourceSlug, string $articleSlug): Builder {
         return $query->join('sources', 'sources.id', 'articles.source_id')
             ->where('sources.slug', $sourceSlug)
@@ -61,6 +65,9 @@ class Article extends Model {
             },
             'language' => function ($query) {
                 $query->select('id', 'name', 'code');
+            },
+            'provider' => function ($query) {
+                $query->select('id', 'name');
             },
         ]);
     }
