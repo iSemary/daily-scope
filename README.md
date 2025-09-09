@@ -34,7 +34,7 @@ It fetches articles from multiple external sources, stores them locally, and exp
 
 ### Backend Framework
 
--   **PHP**: ^8.2
+-   **PHP**: ^8.4
 -   **Laravel**: ^12.0
 
 ### Core Packages
