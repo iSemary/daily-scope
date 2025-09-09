@@ -4,17 +4,25 @@ namespace modules\Source\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\Source\Entities\Source;
+use modules\Source\Services\SourceService;
 
-class SourceController extends ApiController {
+class SourceController extends ApiController
+{
+    private SourceService $sourceService;
+
+    public function __construct(SourceService $sourceService)
+    {
+        $this->sourceService = $sourceService;
+    }
 
     /**
      * The index function retrieves a list of sources and returns a JSON response with the fetched sources.
      * 
      * @return JsonResponse A JSON response is being returned.
      */
-    public function index(): JsonResponse {
-        $sources = Source::select(['id', 'title', 'slug', 'url'])->orderBy("title")->get();
+    public function index(): JsonResponse
+    {
+        $sources = $this->sourceService->list();
         return $this->return(200, "Sources fetched successfully", ['sources' => $sources]);
     }
 
@@ -27,9 +35,9 @@ class SourceController extends ApiController {
      * 
      * @return JsonResponse A JsonResponse object is being returned.
      */
-    public function articles(string $sourceSlug): JsonResponse {
-        $articles = \modules\Article\Entities\Article::withArticleRelations()->byRelatedItemSlug($sourceSlug, \App\Interfaces\ItemsInterface::SOURCE, \App\Interfaces\ItemsInterface::SOURCE_KEY)->paginate(20);
-        $articles = new \modules\Article\Transformers\ArticlesCollection($articles);
+    public function articles(string $sourceSlug): JsonResponse
+    {
+        $articles = $this->sourceService->getArticlesBySlug($sourceSlug);
         return $this->return(200, "Source articles fetched successfully", ['articles' => $articles]);
     }
 }

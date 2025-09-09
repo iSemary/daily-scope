@@ -4,9 +4,16 @@ namespace modules\Category\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\Category\Entities\Category;
+use modules\Category\Services\CategoryService;
 
-class CategoryController extends ApiController {
+class CategoryController extends ApiController
+{
+    private CategoryService $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
 
     /**
      * The index function retrieves categories from the database and returns them in a JSON response.
@@ -14,10 +21,9 @@ class CategoryController extends ApiController {
      * @return JsonResponse a JsonResponse with a status code of 200, a message of "Categories fetched
      * successfully", and an array of categories.
      */
-    public function index(): JsonResponse {
-        $categories = Category::select(['categories.id', 'categories.title', 'categories.slug'])
-            ->orderBy('categories.title')
-            ->get();
+    public function index(): JsonResponse
+    {
+        $categories = $this->categoryService->list();
         return $this->return(200, "Categories fetched successfully", ['categories' => $categories]);
     }
 
@@ -32,14 +38,16 @@ class CategoryController extends ApiController {
      * 
      * @return JsonResponse a JsonResponse.
      */
-    public function articles(string $categorySlug): JsonResponse {
-        $category = Category::where("slug", $categorySlug)->first();
-        if (!$category) {
+    public function articles(string $categorySlug): JsonResponse
+    {
+        $result = $this->categoryService->getArticlesBySlug($categorySlug);
+        
+        if (!$result['category']) {
             return $this->return(400, "Category not found");
         }
         
-        $articles = \modules\Article\Entities\Article::withArticleRelations()->byRelatedItemSlug($categorySlug, \App\Interfaces\ItemsInterface::CATEGORY, \App\Interfaces\ItemsInterface::CATEGORY_KEY)->paginate(20);
-        $articles = new \modules\Article\Transformers\ArticlesCollection($articles);
-        return $this->return(200, "Category articles fetched successfully", ['articles' => $articles]);
+        return $this->return(200, "Category articles fetched successfully", [
+            'articles' => $result['articles']
+        ]);
     }
 }

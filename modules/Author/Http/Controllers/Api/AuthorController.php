@@ -4,9 +4,16 @@ namespace modules\Author\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\Author\Entities\Author;
+use modules\Author\Services\AuthorService;
 
-class AuthorController extends ApiController {
+class AuthorController extends ApiController
+{
+    private AuthorService $authorService;
+
+    public function __construct(AuthorService $authorService)
+    {
+        $this->authorService = $authorService;
+    }
 
     /**
      * The index function retrieves a list of authors from the database and returns a JSON response with
@@ -15,8 +22,9 @@ class AuthorController extends ApiController {
      * @return JsonResponse a JsonResponse with a status code of 200, a message of "Authors fetched
      * successfully", and an array of authors.
      */
-    public function index(): JsonResponse {
-        $authors = Author::select(['id', 'name', 'slug'])->orderBy("name")->get();
+    public function index(): JsonResponse
+    {
+        $authors = $this->authorService->list();
         return $this->return(200, "Authors fetched successfully", ['authors' => $authors]);
     }
 
@@ -32,9 +40,9 @@ class AuthorController extends ApiController {
      * 
      * @return JsonResponse A JsonResponse object is being returned.
      */
-    public function articles(string $sourceSlug, string $authorSlug): JsonResponse {
-        $articles = \modules\Article\Entities\Article::withArticleRelations()->bySourceAndAuthorSlug($sourceSlug, $authorSlug)->paginate(20);
-        $articles = new \modules\Article\Transformers\ArticlesCollection($articles);
+    public function articles(string $sourceSlug, string $authorSlug): JsonResponse
+    {
+        $articles = $this->authorService->getArticlesBySourceAndAuthorSlug($sourceSlug, $authorSlug);
         return $this->return(200, "Author articles fetched successfully", ['articles' => $articles]);
     }
 }
