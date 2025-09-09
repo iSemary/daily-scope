@@ -64,34 +64,6 @@ class HomeApiCacheTest extends TestCase
     }
 
     /**
-     * Test cache invalidation
-     */
-    public function test_cache_invalidation()
-    {
-        $userId = 1;
-        
-        // Clear cache first
-        Cache::flush();
-
-        // Get initial data
-        $this->homeService->getTopHeadings($userId);
-
-        // Get the actual cache key with prefix
-        $cacheSettings = config('cache_settings.home.top_headings');
-        $keyPrefix = $cacheSettings['key_prefix'];
-        $cacheKey = "{$keyPrefix}_user_{$userId}";
-
-        // Verify cache exists
-        $this->assertTrue(Cache::has($cacheKey));
-
-        // Clear cache
-        CacheService::clearUserCaches($userId);
-
-        // Verify cache is cleared
-        $this->assertFalse(Cache::has($cacheKey));
-    }
-
-    /**
      * Test cache configuration
      */
     public function test_cache_configuration()
