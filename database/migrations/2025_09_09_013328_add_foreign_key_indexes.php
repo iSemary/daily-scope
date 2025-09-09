@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('articles', function (Blueprint $table) {
-            // Add indexes on remaining foreign key columns
             $table->index('source_id');
             $table->index('author_id');
         });
