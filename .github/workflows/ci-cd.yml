@@ -82,6 +82,19 @@ jobs:
           REDIS_HOST: 127.0.0.1
           REDIS_PORT: 6379
 
+      - name: Generate Passport Keys
+        run: |
+          php artisan passport:keys --force || echo "Passport keys generation failed, continuing with tests"
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: daily_scope_test
+          DB_USERNAME: daily_scope_user
+          DB_PASSWORD: daily_scope_password
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+
       - name: Run PHPUnit Tests
         run: php artisan test --coverage --coverage-clover=coverage.xml
         env:
