@@ -1,0 +1,161 @@
+services:
+  # PHP-FPM Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: daily-scope-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - daily-scope-network
+    depends_on:
+      - db
+      - redis
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=daily_scope
+      - DB_USERNAME=daily_scope_user
+      - DB_PASSWORD=daily_scope_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+
+  # Nginx Service
+  nginx:
+    image: nginx:alpine
+    container_name: daily-scope-nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - daily-scope-network
+    depends_on:
+      - app
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: daily-scope-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: daily_scope
+      MYSQL_USER: daily_scope_user
+      MYSQL_PASSWORD: daily_scope_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - daily-scope-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: daily-scope-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - daily-scope-network
+
+  # Node.js for Vite (Development)
+  node:
+    image: node:18-alpine
+    container_name: daily-scope-node
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    command: sh -c "npm install && npm run dev"
+    networks:
+      - daily-scope-network
+    depends_on:
+      - app
+
+  # Queue Worker
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: daily-scope-queue
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    command: php artisan queue:work --verbose --tries=3 --timeout=90
+    networks:
+      - daily-scope-network
+    depends_on:
+      - app
+      - db
+      - redis
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=daily_scope
+      - DB_USERNAME=daily_scope_user
+      - DB_PASSWORD=daily_scope_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+
+  # Scheduler (Cron)
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: daily-scope-scheduler
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    command: sh -c "while true; do php artisan schedule:run; sleep 60; done"
+    networks:
+      - daily-scope-network
+    depends_on:
+      - app
+      - db
+      - redis
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=daily_scope
+      - DB_USERNAME=daily_scope_user
+      - DB_PASSWORD=daily_scope_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+
+volumes:
+  db_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  daily-scope-network:
+    driver: bridge
