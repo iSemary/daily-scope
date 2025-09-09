@@ -4,7 +4,6 @@ namespace Modules\User\Services;
 
 use Modules\User\Entities\User;
 use Modules\User\Interfaces\UserInterface;
-use Modules\User\Interfaces\UserInterestTypes;
 
 class UserService
 {
@@ -17,22 +16,41 @@ class UserService
 
     public function getProfile(User $user): array
     {
-        return [
-            'user' => $user,
-            'interests' => $this->userRepository->getUserInterests($user)
-        ];
+        return $this->userRepository->getUserProfile($user);
     }
 
     public function updateProfile(User $user, array $validatedData): bool
     {
-        // Update user info
-        $this->userRepository->update($user, $validatedData);
-        
-        // Update user preferences
-        $this->userRepository->syncInterests($user, $validatedData['categories'], UserInterestTypes::CATEGORY);
-        $this->userRepository->syncInterests($user, $validatedData['authors'], UserInterestTypes::AUTHOR);
-        $this->userRepository->syncInterests($user, $validatedData['sources'], UserInterestTypes::SOURCE);
+        return $this->userRepository->updateUserProfile($user, $validatedData);
+    }
 
-        return true;
+    public function findById(int $id): ?User
+    {
+        return $this->userRepository->findById($id);
+    }
+
+    public function findByEmail(string $email): ?User
+    {
+        return $this->userRepository->findByEmail($email);
+    }
+
+    public function findByUsername(string $username): ?User
+    {
+        return $this->userRepository->findByUsername($username);
+    }
+
+    public function getAllUsers(int $limit = 10, int $offset = 0): array
+    {
+        return $this->userRepository->getAllUsers($limit, $offset);
+    }
+
+    public function searchUsers(string $query, int $limit = 10): array
+    {
+        return $this->userRepository->searchUsers($query, $limit);
+    }
+
+    public function deleteUser(User $user): bool
+    {
+        return $this->userRepository->delete($user);
     }
 }

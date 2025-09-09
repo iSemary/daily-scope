@@ -3,12 +3,12 @@
 namespace App\Services\Providers;
 
 use App\Services\Abstractors\ProviderAbstractor;
+use App\Services\Mappers\MapperFactory;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Modules\Provider\Entities\Provider;
 use Modules\Source\Entities\Source;
-use Illuminate\Support\Str;
 use Modules\Article\Entities\Article;
 use Modules\Author\Entities\Author;
 use Modules\Category\Entities\Category;
@@ -21,6 +21,7 @@ class NewsAPIAi extends ProviderAbstractor
     private string $endPoint;
     private string $apiKey;
     private array $countries = ['Germany', 'United State', 'Netherlands'];
+    private $mapper;
 
     private const NEWS_PATH = 'article/getArticles';
 
@@ -47,6 +48,7 @@ class NewsAPIAi extends ProviderAbstractor
         $this->provider = $provider;
         $this->setApiKey($provider->api_key);
         $this->setEndPoint($provider->end_point);
+        $this->mapper = MapperFactory::create('NewsAPIAi');
     }
 
     protected function setApiKey(string $apiKey): void
@@ -107,67 +109,56 @@ class NewsAPIAi extends ProviderAbstractor
     protected function createOrUpdateArticles(array $articles, bool $heading): void
     {
         if (isset($articles) && is_array($articles) && count($articles)) {
-            $category = Category::updateOrCreate([
-                'title' => ucfirst($articles['category']),
-                'slug' => strtolower($articles['category'])
-            ]);
-            $country = Country::updateOrCreate([
-                'name' => strtoupper($articles['country']),
-                'code' => $this->getCountryCode($articles['country'])
-            ]);
+            $mappedCategory = $this->mapper->mapCategory($articles);
+            $mappedCountry = $this->mapper->mapCountry($articles);
+            
+            $category = Category::updateOrCreate($mappedCategory);
+            $country = Country::updateOrCreate($mappedCountry);
+            
             foreach ($articles as $article) {
                 if (isset($article['title'])) {
+                    $mappedLanguage = $this->mapper->mapLanguage($article);
+                    $mappedSource = $this->mapper->mapSource($article);
+                    $mappedArticle = $this->mapper->mapArticle($article, $heading);
+                    $mappedAuthor = $this->mapper->mapAuthor($article, null);
+
                     if (isset($article['lang'])) {
-                        $language = Language::updateOrCreate([
-                            'name' => strtoupper($article['lang']),
-                            'code' => $article['lang']
-                        ]);
+                        $language = Language::updateOrCreate($mappedLanguage);
                     }
 
                     $source = Source::updateOrCreate([
-                        'slug' => Str::slug($article['title']),
+                        'slug' => $mappedSource['slug'],
                     ], [
-                        'title' => $article['title'],
+                        'title' => $mappedSource['title'],
                         'provider_id' => $this->provider->id,
-                        'url' => $article['uri'] ?? '/',
-                        'description' => '',
+                        'url' => $mappedSource['url'],
+                        'description' => $mappedSource['description'],
                         'category_id' => $category->id,
                         'country_id' => $country->id,
                         'language_id' => $language->id,
                     ]);
 
-                    $defaultAuthorName = $source->title . " Author";
-                    $authorName = isset($article['authors'][0]['name']) ? $article['authors'][0]['name'] : $defaultAuthorName;
-                    $author = Author::updateOrCreate(['name' => $authorName, 'slug' => Str::slug($authorName),], ['source_id' => $source->id]);
+                    $author = Author::updateOrCreate(
+                        $mappedAuthor,
+                        ['source_id' => $source->id]
+                    );
 
                     Article::updateOrCreate([
-                        'slug' => Str::slug(substr($article['title'], 0, 100))
+                        'slug' => $mappedArticle['slug']
                     ], [
-                        'title' => $article['title'],
+                        'title' => $mappedArticle['title'],
                         'author_id' => $author->id,
                         'source_id' => $source->id,
-                        'description' => mb_convert_encoding(substr($article['body'], 0, 250) . "...", "UTF-8"),
-                        'body' => mb_convert_encoding($article['body'] ?? '-', "UTF-8"),
-                        'is_head' => $heading,
-                        'reference_url' => $article['url'],
-                        'image' => $article['image'],
-                        'published_at' => strtotime($article['dateTime']),
+                        'description' => $mappedArticle['description'],
+                        'body' => $mappedArticle['body'],
+                        'is_head' => $mappedArticle['is_head'],
+                        'reference_url' => $mappedArticle['reference_url'],
+                        'image' => $mappedArticle['image'],
+                        'published_at' => $mappedArticle['published_at'],
                     ]);
                 }
             }
         }
-    }
-
-    private function getCountryCode(string $string): string
-    {
-        $words = explode(' ', $string);
-        $initials = '';
-
-        foreach ($words as $word) {
-            $initials .= strtoupper(substr($word, 0, 1));
-        }
-
-        return $initials;
     }
 
     protected function createOrUpdateSources(array $sources): void {}

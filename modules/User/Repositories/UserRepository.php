@@ -33,6 +33,16 @@ class UserRepository implements UserInterface
         $user->syncInterests($interests, $itemType);
     }
 
+    public function findByUsername(string $username): ?User
+    {
+        return User::where('username', $username)->first();
+    }
+
+    public function delete(User $user): bool
+    {
+        return $user->delete();
+    }
+
     public function getUserInterests(User $user): array
     {
         $formattedUserInterests = [
@@ -58,5 +68,50 @@ class UserRepository implements UserInterface
         }
 
         return $formattedUserInterests;
+    }
+
+    public function getUserProfile(User $user): array
+    {
+        return [
+            'user' => $user,
+            'interests' => $this->getUserInterests($user)
+        ];
+    }
+
+    public function updateUserProfile(User $user, array $data): bool
+    {
+        $this->update($user, $data);
+        
+        if (isset($data['categories'])) {
+            $this->syncInterests($user, $data['categories'], UserInterestTypes::CATEGORY);
+        }
+        if (isset($data['authors'])) {
+            $this->syncInterests($user, $data['authors'], UserInterestTypes::AUTHOR);
+        }
+        if (isset($data['sources'])) {
+            $this->syncInterests($user, $data['sources'], UserInterestTypes::SOURCE);
+        }
+
+        return true;
+    }
+
+    public function getAllUsers(int $limit = 10, int $offset = 0): array
+    {
+        return User::select('id', 'full_name', 'email', 'username', 'created_at')
+            ->skip($offset)
+            ->take($limit)
+            ->get()
+            ->toArray();
+    }
+
+    public function searchUsers(string $query, int $limit = 10): array
+    {
+        return User::where('full_name', 'like', "%{$query}%")
+            ->orWhere('email', 'like', "%{$query}%")
+            ->orWhere('username', 'like', "%{$query}%")
+            ->select('id', 'full_name', 'email', 'username', 'created_at')
+            ->take($limit)
+            ->get()
+            ->toArray();
     }
 }

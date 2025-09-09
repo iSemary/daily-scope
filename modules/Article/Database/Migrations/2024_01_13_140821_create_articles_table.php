@@ -15,12 +15,8 @@ return new class extends Migration {
             $table->longText('body');
             $table->string('image', 1024)->nullable();
             $table->boolean('is_head')->default(0);
-            $table->integer('provider_id');
-            $table->integer('source_id');
-            $table->integer('category_id');
-            $table->integer('author_id');
-            $table->integer('language_id');
-            $table->integer('country_id');
+            $table->unsignedBigInteger('source_id');
+            $table->unsignedBigInteger('author_id');
             $table->integer('published_at')->nullable();
             $table->softDeletes();
             $table->timestamps();

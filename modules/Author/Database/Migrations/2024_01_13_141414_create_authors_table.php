@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name', 255);
             $table->string('slug', 255);
-            $table->integer('source_id');
+            $table->unsignedBigInteger('source_id');
             $table->timestamps();
         });
     }

@@ -6,15 +6,18 @@ use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
 use Modules\User\Http\Requests\LoginRequest;
 use Modules\User\Http\Requests\RegisterRequest;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Exception;
-use Modules\Country\Entities\Country;
+use Modules\User\Services\AuthService;
 use Modules\User\Entities\User;
-use Modules\User\Interfaces\UserInterestTypes;
 
 class AuthController extends ApiController {
+    private AuthService $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     /**
      * Handle user registration.
      *
@@ -22,21 +25,10 @@ class AuthController extends ApiController {
      * @return JsonResponse
      */
     public function register(RegisterRequest $registerRequest): JsonResponse {
-        /* Requested data passed the validation */
         $userRequest = $registerRequest->validated();
-        $email = $userRequest['email'];
-        $username = strtok($email, '@');
-        // Adding username to the $userRequest array
-        $userRequest['username'] = $username .  Str::random(4);
-        // Create or update the country code if not exists
-        $userRequest['country_id'] = Country::getCountryIdByCode($userRequest['country_code']);
-        // Create new user record
-        $user = User::create($userRequest);
-        // Create user preferred categories
-        $user->syncInterests($userRequest['categories'], UserInterestTypes::CATEGORY);
-        // Collect user details for authentication
-        $response = $this->collectUserDetails($user);
-        // Return Success Json Response
+        $user = $this->authService->register($userRequest);
+        $response = $this->authService->collectUserDetails($user);
+        
         return $this->return(200, 'User Registered Successfully', ['user' => $response]);
     }
 
@@ -47,57 +39,16 @@ class AuthController extends ApiController {
      * @return JsonResponse
      */
     public function login(LoginRequest $loginRequest): JsonResponse {
-        // Check login credentials
-        if (auth()->attempt(['email' => $loginRequest->email, 'password' => $loginRequest->password])) {
-            $user = auth()->user();
-            // collect user details to return in the json response
-            $response = $this->collectUserDetails($user);
-            // Return Success Json Response
+        $user = $this->authService->login($loginRequest->email, $loginRequest->password);
+        
+        if ($user) {
+            $response = $this->authService->collectUserDetails($user);
             return $this->return(200, 'User Logged in Successfully', ['user' => $response]);
         }
+        
         return $this->return(400, 'Invalid email or password');
     }
 
-    /**
-     * Collect user details for response.
-     *
-     * @param User $user
-     * @param bool $generateToken
-     * @return User
-     */
-    public function collectUserDetails(User $user, bool $generateToken = true): User {
-        if ($generateToken) {
-            $accessToken = $this->generateAccessToken($user);
-        }
-        $userData = $this->selectUserData($user);
-        if ($generateToken) {
-            $userData['access_token'] = $accessToken;
-        }
-        return $userData;
-    }
-
-    /**
-     * Generate an access token for the user.
-     *
-     * @param User $user
-     * @return string
-     */
-    private function generateAccessToken(User $user): string {
-        return $user->createToken('web-app')->accessToken;
-    }
-
-    /**
-     * The function selects specific user data (full name, email, username, and creation date) based on the
-     * user's ID.
-     * 
-     * @param User user The parameter `` is an instance of the `User` class.
-     * 
-     * @return User a User object with the selected fields: 'full_name', 'email', 'username', and
-     * 'created_at'.
-     */
-    private function selectUserData(User $user): User {
-        return $user->where("id", $user->id)->select('full_name', 'email', 'username', 'created_at')->first();
-    }
 
     /**
      * The function logs out a user by deleting their access tokens either for a specific request or for
@@ -110,23 +61,13 @@ class AuthController extends ApiController {
      * @return JsonResponse a JsonResponse.
      */
     public function logout(Request $request): JsonResponse {
-        $user = auth()->guard('api')->user();
-        try {
-            if ($request->type == 1) {
-                // Delete only the request token
-                DB::table("oauth_access_tokens")->where("id", $user->token()['id'])->delete();
-            } else {
-                // Delete all user tokens
-                $user->tokens->each(function ($token) use ($user) {
-                    if ($token->id !== $user->token()['id']) {
-                        $token->delete();
-                    }
-                });
-            }
+        $user = $this->authService->getAuthenticatedUser();
+        
+        if ($this->authService->logout($user, $request->type ?? 0)) {
             return $this->return(200, 'Logged out successfully');
-        } catch (Exception $e) {
-            return $this->return(400, 'Couldn\'t logout using this token', [], ['e' => $e->getMessage()]);
         }
+        
+        return $this->return(400, 'Couldn\'t logout using this token');
     }
 
     /**
@@ -136,7 +77,7 @@ class AuthController extends ApiController {
      * @return JsonResponse A JsonResponse object is being returned.
      */
     public function checkAuthentication(): JsonResponse {
-        if (auth()->guard('api')->check()) {
+        if ($this->authService->isAuthenticated()) {
             return $this->return(200, "Authenticated successfully");
         }
         return $this->return(400, "Session expired");
@@ -149,8 +90,8 @@ class AuthController extends ApiController {
      * @return JsonResponse a JsonResponse object.
      */
     public function getUser(): JsonResponse {
-        $auth = auth()->guard('api')->user();
-        $user = $this->collectUserDetails($auth, false);
-        return $this->return(200, "User fetched successfully", ['user' => $user]);
+        $user = $this->authService->getAuthenticatedUser();
+        $userData = $this->authService->collectUserDetails($user, false);
+        return $this->return(200, "User fetched successfully", ['user' => $userData]);
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->renameColumn('name', 'full_name');
             $table->bigInteger('phone')->unique()->nullable()->after('email');
             $table->string('username', 64)->nullable()->after('phone');
-            $table->integer('country_id')->after('username');
+            $table->unsignedBigInteger('country_id')->after('username');
             $table->timestamp('last_password_at')->nullable()->after('password');
             $table->softDeletes()->after('updated_at');
         });

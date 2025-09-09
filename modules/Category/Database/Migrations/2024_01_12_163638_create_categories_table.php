@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->id();
             $table->string('title', 255);
             $table->string('slug', 255)->unique();
-            $table->integer('parent_id')->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->integer('order_number')->default(0);
             $table->tinyInteger('status')->default(0);
             $table->softDeletes();
