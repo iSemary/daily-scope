@@ -29,3 +29,6 @@ Route::group([], base_path('modules/Language/Routes/api.php'));
 
 // Provider Module Routes
 Route::group([], base_path('modules/Provider/Routes/api.php'));
+
+// User Module Routes
+Route::group([], base_path('modules/User/Routes/api.php'));
