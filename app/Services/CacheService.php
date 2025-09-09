@@ -56,7 +56,7 @@ class CacheService
     private static function clearCachesByPattern(string $pattern): void
     {
         try {
-            if (config('cache.default') === 'redis') {
+            if (config('cache.default') === 'redis' && Cache::getStore() instanceof \Illuminate\Cache\RedisStore) {
                 $redis = Cache::getRedis();
                 $keys = $redis->keys($pattern);
                 
@@ -91,7 +91,7 @@ class CacheService
     public static function getCacheStats(): array
     {
         try {
-            if (config('cache.default') === 'redis') {
+            if (config('cache.default') === 'redis' && Cache::getStore() instanceof \Illuminate\Cache\RedisStore) {
                 $redis = Cache::getRedis();
                 $info = $redis->info();
                 

@@ -93,6 +93,9 @@ jobs:
           DB_PASSWORD: daily_scope_password
           REDIS_HOST: 127.0.0.1
           REDIS_PORT: 6379
+          CACHE_STORE: array
+          SESSION_DRIVER: array
+          QUEUE_CONNECTION: sync
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3

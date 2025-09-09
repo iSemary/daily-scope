@@ -38,6 +38,10 @@ class CacheServiceTest extends TestCase
                 'total_commands_processed' => '1000'
             ]);
 
+        $mockStore = Mockery::mock(\Illuminate\Cache\RedisStore::class);
+        Cache::shouldReceive('getStore')
+            ->once()
+            ->andReturn($mockStore);
         Cache::shouldReceive('getRedis')
             ->once()
             ->andReturn($mockRedis);
@@ -67,6 +71,10 @@ class CacheServiceTest extends TestCase
     {
         config(['cache.default' => 'redis']);
 
+        $mockStore = Mockery::mock(\Illuminate\Cache\RedisStore::class);
+        Cache::shouldReceive('getStore')
+            ->once()
+            ->andReturn($mockStore);
         Cache::shouldReceive('getRedis')
             ->once()
             ->andThrow(new \Exception('Redis connection failed'));
