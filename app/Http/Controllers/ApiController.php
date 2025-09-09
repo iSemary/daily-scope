@@ -57,7 +57,7 @@ class ApiController extends Controller {
      *
      * @return User|null The authenticated user
      */
-    public function getAuthenticatedUser(): ?\App\Models\User {
+    public function getAuthenticatedUser(): ?\modules\User\Entities\User {
         return auth()->guard('api')->user();
     }
 }
