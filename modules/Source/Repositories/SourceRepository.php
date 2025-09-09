@@ -1,11 +1,11 @@
 <?php
 
-namespace modules\Source\Repositories;
+namespace Modules\Source\Repositories;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use modules\Source\Entities\Source;
-use modules\Source\Interfaces\SourceInterface;
+use Modules\Source\Entities\Source;
+use Modules\Source\Interfaces\SourceInterface;
 use App\Interfaces\ItemsInterface;
 
 class SourceRepository implements SourceInterface
@@ -27,7 +27,7 @@ class SourceRepository implements SourceInterface
 
     public function getArticlesBySlug(string $slug): LengthAwarePaginator
     {
-        return \modules\Article\Entities\Article::withArticleRelations()
+        return \Modules\Article\Entities\Article::withArticleRelations()
             ->byRelatedItemSlug($slug, ItemsInterface::SOURCE, ItemsInterface::SOURCE_KEY)
             ->paginate(20);
     }

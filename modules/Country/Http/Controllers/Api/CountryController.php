@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Country\Http\Controllers\Api;
+namespace Modules\Country\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\Country\Services\CountryService;
+use Modules\Country\Services\CountryService;
 
 class CountryController extends ApiController
 {

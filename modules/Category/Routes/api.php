@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use modules\Category\Http\Controllers\Api\CategoryController;
+use Modules\Category\Http\Controllers\Api\CategoryController;
 
 // All Categories
 Route::get("categories", [CategoryController::class, "index"]);

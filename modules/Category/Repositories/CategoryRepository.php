@@ -1,11 +1,11 @@
 <?php
 
-namespace modules\Category\Repositories;
+namespace Modules\Category\Repositories;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use modules\Category\Entities\Category;
-use modules\Category\Interfaces\CategoryInterface;
+use Modules\Category\Entities\Category;
+use Modules\Category\Interfaces\CategoryInterface;
 use App\Interfaces\ItemsInterface;
 
 class CategoryRepository implements CategoryInterface
@@ -31,7 +31,7 @@ class CategoryRepository implements CategoryInterface
 
     public function getArticlesBySlug(string $slug): LengthAwarePaginator
     {
-        return \modules\Article\Entities\Article::withArticleRelations()
+        return \Modules\Article\Entities\Article::withArticleRelations()
             ->byRelatedItemSlug($slug, ItemsInterface::CATEGORY, ItemsInterface::CATEGORY_KEY)
             ->paginate(20);
     }

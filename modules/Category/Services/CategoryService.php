@@ -1,11 +1,11 @@
 <?php
 
-namespace modules\Category\Services;
+namespace Modules\Category\Services;
 
 use Illuminate\Database\Eloquent\Collection;
-use modules\Category\Entities\Category;
-use modules\Category\Interfaces\CategoryInterface;
-use modules\Article\Transformers\ArticlesCollection;
+use Modules\Category\Entities\Category;
+use Modules\Category\Interfaces\CategoryInterface;
+use Modules\Article\Transformers\ArticlesCollection;
 
 class CategoryService
 {

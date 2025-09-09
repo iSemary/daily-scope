@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\Source\Transformers;
+namespace Modules\Source\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 

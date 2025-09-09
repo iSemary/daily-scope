@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Provider\Repositories;
+namespace Modules\Provider\Repositories;
 
 use Illuminate\Database\Eloquent\Collection;
-use modules\Provider\Entities\Provider;
-use modules\Provider\Interfaces\ProviderInterface;
+use Modules\Provider\Entities\Provider;
+use Modules\Provider\Interfaces\ProviderInterface;
 
 class ProviderRepository implements ProviderInterface {
     public function all(): Collection {

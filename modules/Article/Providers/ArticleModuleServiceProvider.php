@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Article\Providers;
+namespace Modules\Article\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use modules\Article\Interfaces\ArticleInterface;
-use modules\Article\Repositories\ArticleRepository;
+use Modules\Article\Interfaces\ArticleInterface;
+use Modules\Article\Repositories\ArticleRepository;
 
 class ArticleModuleServiceProvider extends ServiceProvider
 {

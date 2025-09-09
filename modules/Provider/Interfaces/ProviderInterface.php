@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Provider\Interfaces;
+namespace Modules\Provider\Interfaces;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use modules\Provider\Entities\Provider;
+use Modules\Provider\Entities\Provider;
 
 interface ProviderInterface {
     public function all(): Collection;

@@ -1,11 +1,11 @@
 <?php
 
-namespace modules\Article\Http\Controllers\Api;
+namespace Modules\Article\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\Article\Http\Requests\SearchRequest;
-use modules\Article\Services\ArticleService;
+use Modules\Article\Http\Requests\SearchRequest;
+use Modules\Article\Services\ArticleService;
 
 class ArticleController extends ApiController
 {

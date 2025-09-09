@@ -1,14 +1,14 @@
 <?php
 
-namespace modules\Article\Entities;
+namespace Modules\Article\Entities;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use modules\Article\Transformers\ArticlesResource;
-use modules\User\Entities\UserInterest;
-use modules\User\Interfaces\UserInterestTypes;
+use Modules\Article\Transformers\ArticlesResource;
+use Modules\User\Entities\UserInterest;
+use Modules\User\Interfaces\UserInterestTypes;
 
 class Article extends Model {
     use HasFactory, SoftDeletes;
@@ -18,27 +18,27 @@ class Article extends Model {
     
 
     public function source() {
-        return $this->belongsTo(\modules\Source\Entities\Source::class);
+        return $this->belongsTo(\Modules\Source\Entities\Source::class);
     }
 
     public function author() {
-        return $this->belongsTo(\modules\Author\Entities\Author::class);
+        return $this->belongsTo(\Modules\Author\Entities\Author::class);
     }
 
     public function category() {
-        return $this->belongsTo(\modules\Category\Entities\Category::class);
+        return $this->belongsTo(\Modules\Category\Entities\Category::class);
     }
 
     public function country() {
-        return $this->belongsTo(\modules\Country\Entities\Country::class);
+        return $this->belongsTo(\Modules\Country\Entities\Country::class);
     }
 
     public function language() {
-        return $this->belongsTo(\modules\Language\Entities\Language::class);
+        return $this->belongsTo(\Modules\Language\Entities\Language::class);
     }
 
     public function provider() {
-        return $this->belongsTo(\modules\Provider\Entities\Provider::class);
+        return $this->belongsTo(\Modules\Provider\Entities\Provider::class);
     }
 
     public function scopeBySourceAndArticleSlug(Builder $query, string $sourceSlug, string $articleSlug): Builder {

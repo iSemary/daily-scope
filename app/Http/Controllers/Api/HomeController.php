@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
-use modules\Article\Entities\Article;
-use modules\Article\Transformers\ArticlesResource;
-use modules\Category\Entities\Category;
-use modules\User\Entities\UserInterest;
-use modules\User\Interfaces\UserInterestTypes;
+use Modules\Article\Entities\Article;
+use Modules\Article\Transformers\ArticlesResource;
+use Modules\Category\Entities\Category;
+use Modules\User\Entities\UserInterest;
+use Modules\User\Interfaces\UserInterestTypes;
 
 class HomeController extends ApiController {
     /**

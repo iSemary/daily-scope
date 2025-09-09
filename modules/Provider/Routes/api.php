@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use modules\Provider\Http\Controllers\Api\ProviderController;
+use Modules\Provider\Http\Controllers\Api\ProviderController;
 
 Route::get("providers", [ProviderController::class, "index"]);
 Route::get("providers/{id}", [ProviderController::class, "show"]);

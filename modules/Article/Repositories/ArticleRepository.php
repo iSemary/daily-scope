@@ -1,13 +1,13 @@
 <?php
 
-namespace modules\Article\Repositories;
+namespace Modules\Article\Repositories;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use modules\Article\Entities\Article;
-use modules\Article\Interfaces\ArticleInterface;
+use Modules\Article\Entities\Article;
+use Modules\Article\Interfaces\ArticleInterface;
 use App\Interfaces\ItemsInterface;
 
 class ArticleRepository implements ArticleInterface

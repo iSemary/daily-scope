@@ -1,11 +1,11 @@
 <?php
 
-namespace modules\Provider\Services;
+namespace Modules\Provider\Services;
 
 use App\Services\ScrapNews;
 use Illuminate\Database\Eloquent\Collection;
-use modules\Provider\Entities\Provider;
-use modules\Provider\Interfaces\ProviderInterface;
+use Modules\Provider\Entities\Provider;
+use Modules\Provider\Interfaces\ProviderInterface;
 
 class ProviderService {
     private ProviderInterface $providers;

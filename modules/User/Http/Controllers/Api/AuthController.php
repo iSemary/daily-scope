@@ -1,18 +1,18 @@
 <?php
 
-namespace modules\User\Http\Controllers\Api;
+namespace Modules\User\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\User\Http\Requests\LoginRequest;
-use modules\User\Http\Requests\RegisterRequest;
+use Modules\User\Http\Requests\LoginRequest;
+use Modules\User\Http\Requests\RegisterRequest;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
-use modules\Country\Entities\Country;
-use modules\User\Entities\User;
-use modules\User\Interfaces\UserInterestTypes;
+use Modules\Country\Entities\Country;
+use Modules\User\Entities\User;
+use Modules\User\Interfaces\UserInterestTypes;
 
 class AuthController extends ApiController {
     /**

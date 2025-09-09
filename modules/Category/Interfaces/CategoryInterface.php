@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Category\Interfaces;
+namespace Modules\Category\Interfaces;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use modules\Category\Entities\Category;
+use Modules\Category\Entities\Category;
 
 interface CategoryInterface
 {

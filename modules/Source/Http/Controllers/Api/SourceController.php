@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Source\Http\Controllers\Api;
+namespace Modules\Source\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\Source\Services\SourceService;
+use Modules\Source\Services\SourceService;
 
 class SourceController extends ApiController
 {

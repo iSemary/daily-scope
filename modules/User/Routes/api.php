@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use modules\User\Http\Controllers\Api\AuthController;
-use modules\User\Http\Controllers\Api\UserController;
+use Modules\User\Http\Controllers\Api\AuthController;
+use Modules\User\Http\Controllers\Api\UserController;
 
 /**
  *  Authentication Routes

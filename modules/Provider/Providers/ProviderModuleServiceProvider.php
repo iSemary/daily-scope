@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Provider\Providers;
+namespace Modules\Provider\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use modules\Provider\Interfaces\ProviderInterface;
-use modules\Provider\Repositories\ProviderRepository;
+use Modules\Provider\Interfaces\ProviderInterface;
+use Modules\Provider\Repositories\ProviderRepository;
 
 class ProviderModuleServiceProvider extends ServiceProvider {
     public function register(): void {

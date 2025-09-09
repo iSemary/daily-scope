@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Category\Http\Controllers\Api;
+namespace Modules\Category\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\Category\Services\CategoryService;
+use Modules\Category\Services\CategoryService;
 
 class CategoryController extends ApiController
 {

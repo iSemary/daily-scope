@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Country\Services;
+namespace Modules\Country\Services;
 
 use Illuminate\Database\Eloquent\Collection;
-use modules\Country\Entities\Country;
-use modules\Country\Interfaces\CountryInterface;
+use Modules\Country\Entities\Country;
+use Modules\Country\Interfaces\CountryInterface;
 
 class CountryService
 {

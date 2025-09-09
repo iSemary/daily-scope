@@ -1,13 +1,13 @@
 <?php
 
-namespace modules\Article\Services;
+namespace Modules\Article\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use modules\Article\Entities\Article;
-use modules\Article\Interfaces\ArticleInterface;
-use modules\Article\Transformers\ArticleResource;
-use modules\Article\Transformers\ArticlesCollection;
+use Modules\Article\Entities\Article;
+use Modules\Article\Interfaces\ArticleInterface;
+use Modules\Article\Transformers\ArticleResource;
+use Modules\Article\Transformers\ArticlesCollection;
 use App\Interfaces\ItemsInterface;
 
 class ArticleService

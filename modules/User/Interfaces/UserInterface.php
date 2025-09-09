@@ -1,8 +1,8 @@
 <?php
 
-namespace modules\User\Interfaces;
+namespace Modules\User\Interfaces;
 
-use modules\User\Entities\User;
+use Modules\User\Entities\User;
 
 interface UserInterface
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Source\Providers;
+namespace Modules\Source\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use modules\Source\Interfaces\SourceInterface;
-use modules\Source\Repositories\SourceRepository;
+use Modules\Source\Interfaces\SourceInterface;
+use Modules\Source\Repositories\SourceRepository;
 
 class SourceModuleServiceProvider extends ServiceProvider
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\User\Interfaces;
+namespace Modules\User\Interfaces;
 
 interface UserInterestTypes {
     const CATEGORY = 1;

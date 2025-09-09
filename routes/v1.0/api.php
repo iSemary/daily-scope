@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\HomeController;
 use Illuminate\Support\Facades\Route;
-use modules\Article\Http\Controllers\Api\ArticleController;
+use Modules\Article\Http\Controllers\Api\ArticleController;
 
 /**
  * API Version 1.0

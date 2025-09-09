@@ -1,9 +1,9 @@
 <?php
 
-namespace modules\Language\Interfaces;
+namespace Modules\Language\Interfaces;
 
 use Illuminate\Database\Eloquent\Collection;
-use modules\Language\Entities\Language;
+use Modules\Language\Entities\Language;
 
 interface LanguageInterface
 {

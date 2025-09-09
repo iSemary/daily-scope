@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Source\Interfaces;
+namespace Modules\Source\Interfaces;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use modules\Source\Entities\Source;
+use Modules\Source\Entities\Source;
 
 interface SourceInterface
 {
