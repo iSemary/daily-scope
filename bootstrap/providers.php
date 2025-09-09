@@ -3,6 +3,7 @@
 return [
     App\Providers\AppServiceProvider::class,
     App\Providers\ApiVersionServiceProvider::class,
+    App\Providers\HomeServiceProvider::class,
     Laravel\Passport\PassportServiceProvider::class,
     Modules\Article\Providers\ArticleModuleServiceProvider::class,
     Modules\Author\Providers\AuthorModuleServiceProvider::class,

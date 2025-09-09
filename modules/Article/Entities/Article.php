@@ -71,7 +71,7 @@ class Article extends Model
     public function scopeBySourceAndAuthorSlug(Builder $query, string $sourceSlug, string $authorSlug): Builder
     {
         return $query->join('sources', 'sources.id', 'articles.source_id')
-            ->join('authors', 'authors.source_id', 'sources.id')
+            ->join('authors', 'authors.id', 'articles.author_id')
             ->where('sources.slug', $sourceSlug)
             ->where('authors.slug', $authorSlug);
     }
