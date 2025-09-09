@@ -7,6 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Modules\Article\Entities\Article;
 use Modules\User\Entities\UserInterest;
 use Modules\User\Interfaces\UserInterestTypes;
+use Illuminate\Support\Facades\Cache;
 
 class HomeRepository
 {
@@ -91,6 +92,15 @@ class HomeRepository
      */
     public function getUserPreferredCategoryIds(int $userId): array
     {
-        return UserInterest::getItemIds($userId, UserInterestTypes::CATEGORY);
+        // Get cache settings from config
+        $cacheSettings = config('cache_settings.home.user_categories');
+        $keyPrefix = $cacheSettings['key_prefix'];
+        $cacheTtl = $cacheSettings['ttl'];
+        
+        $cacheKey = "{$keyPrefix}_{$userId}";
+        
+        return Cache::remember($cacheKey, $cacheTtl, function () use ($userId) {
+            return UserInterest::getItemIds($userId, UserInterestTypes::CATEGORY);
+        });
     }
 }
