@@ -6,6 +6,7 @@ Data Sources Used: NewsAPI - NewsAPIAi - NewsDataIO
 
 -   [About](#about)
 -   [Features](#features)
+-   [Database Diagram](#database-diagram)
 -   [Cache Service](#cache-service)
 -   [Technologies](#technologies)
 -   [Get Started](#get-started)
@@ -31,6 +32,10 @@ It fetches articles from multiple external sources, stores them locally, and exp
     - Allow users to customize their feed with preferred sources, categories, and authors.
 4. **Mobile-Responsive Design:**
     - Optimize the website for a seamless mobile viewing experience.
+
+## Database Diagram
+
+![Daily Scope Diagram](public/images/daily_scope_diagram.png)
 
 ## Cache Service
 
@@ -70,6 +75,7 @@ php artisan cache:clear-home --user=1
 
 -   **MySQL** - Primary Database
 -   **Redis** - Caching
+-   **Elasticsearch** - Long text search engine
 
 ### Infrastructure
 
