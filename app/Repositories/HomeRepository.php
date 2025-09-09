@@ -23,7 +23,9 @@ class HomeRepository
         return Article::withArticleRelations()
             ->where("is_head", 1)
             ->when($categoryIds, function ($query) use ($categoryIds) {
-                return $query->whereIn('category_id', $categoryIds);
+                return $query->whereHas('source', function ($q) use ($categoryIds) {
+                    $q->whereIn('category_id', $categoryIds);
+                });
             })
             ->orderByDesc("published_at")
             ->limit($limit)
@@ -60,7 +62,9 @@ class HomeRepository
         $categoryIds = UserInterest::getItemIds($userId, UserInterestTypes::CATEGORY);
         
         return Article::withArticleRelations()
-            ->whereIn("articles.category_id", $categoryIds)
+            ->whereHas('source', function ($query) use ($categoryIds) {
+                $query->whereIn('category_id', $categoryIds);
+            })
             ->orderByDesc("published_at")
             ->limit($limit)
             ->paginate();
