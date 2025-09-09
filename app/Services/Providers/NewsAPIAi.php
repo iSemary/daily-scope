@@ -5,6 +5,7 @@ namespace App\Services\Providers;
 use App\Services\Abstractors\ProviderAbstractor;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Modules\Provider\Entities\Provider;
 use Modules\Source\Entities\Source;
 use Illuminate\Support\Str;
@@ -14,7 +15,8 @@ use Modules\Category\Entities\Category;
 use Modules\Country\Entities\Country;
 use Modules\Language\Entities\Language;
 
-class NewsAPIAi extends ProviderAbstractor {
+class NewsAPIAi extends ProviderAbstractor
+{
     private Provider $provider;
     private string $endPoint;
     private string $apiKey;
@@ -22,17 +24,33 @@ class NewsAPIAi extends ProviderAbstractor {
 
     private const NEWS_PATH = 'article/getArticles';
 
-    public function fetch() {
-        $this->fetchArticles();
+    public function fetch()
+    {
+        Log::info("Starting NewsAPIAi fetch process", ['provider_id' => $this->provider->id]);
+
+        try {
+            $this->fetchArticles();
+
+            Log::info("NewsAPIAi fetch process completed successfully", ['provider_id' => $this->provider->id]);
+        } catch (\Exception $e) {
+            Log::error("NewsAPIAi fetch process failed", [
+                'provider_id' => $this->provider->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
 
-    public function __construct(Provider $provider) {
+    public function __construct(Provider $provider)
+    {
         $this->provider = $provider;
         $this->setApiKey($provider->api_key);
         $this->setEndPoint($provider->end_point);
     }
 
-    protected function setApiKey(string $apiKey): void {
+    protected function setApiKey(string $apiKey): void
+    {
         try {
             $this->apiKey = Crypt::decrypt($apiKey);
         } catch (\Throwable $e) {
@@ -40,19 +58,23 @@ class NewsAPIAi extends ProviderAbstractor {
         }
     }
 
-    protected function getApiKey(): string {
+    protected function getApiKey(): string
+    {
         return $this->apiKey;
     }
 
-    protected function setEndPoint(string $endPoint): void {
+    protected function setEndPoint(string $endPoint): void
+    {
         $this->endPoint = $endPoint;
     }
 
-    protected function getEndPoint(): string {
+    protected function getEndPoint(): string
+    {
         return $this->endPoint;
     }
 
-    protected function fetchArticles(): void {
+    protected function fetchArticles(): void
+    {
         foreach ($this->countries as $country) {
             $response = Http::timeout(30)->post(
                 $this->endPoint . self::NEWS_PATH,
@@ -82,7 +104,8 @@ class NewsAPIAi extends ProviderAbstractor {
         }
     }
 
-    protected function createOrUpdateArticles(array $articles, bool $heading): void {
+    protected function createOrUpdateArticles(array $articles, bool $heading): void
+    {
         if (isset($articles) && is_array($articles) && count($articles)) {
             $category = Category::updateOrCreate([
                 'title' => ucfirst($articles['category']),
@@ -139,7 +162,8 @@ class NewsAPIAi extends ProviderAbstractor {
         }
     }
 
-    private function getCountryCode(string $string): string {
+    private function getCountryCode(string $string): string
+    {
         $words = explode(' ', $string);
         $initials = '';
 
@@ -150,15 +174,11 @@ class NewsAPIAi extends ProviderAbstractor {
         return $initials;
     }
 
-    protected function createOrUpdateSources(array $sources): void {
-    }
+    protected function createOrUpdateSources(array $sources): void {}
 
-    protected function fetchSources(): void {
-    }
+    protected function fetchSources(): void {}
 
-    protected function fetchTopHeadingsSources(): void {
-    }
+    protected function fetchTopHeadingsSources(): void {}
 
-    protected function fetchTopHeadingsArticles(): void {
-    }
+    protected function fetchTopHeadingsArticles(): void {}
 }

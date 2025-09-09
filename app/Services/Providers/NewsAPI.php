@@ -5,6 +5,7 @@ namespace App\Services\Providers;
 use App\Services\Abstractors\ProviderAbstractor;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Modules\Provider\Entities\Provider;
 use Modules\Source\Entities\Source;
 use Illuminate\Support\Str;
@@ -14,7 +15,8 @@ use Modules\Category\Entities\Category;
 use Modules\Country\Entities\Country;
 use Modules\Language\Entities\Language;
 
-class NewsAPI extends ProviderAbstractor {
+class NewsAPI extends ProviderAbstractor
+{
     private Provider $provider;
     private string $endPoint;
     private string $apiKey;
@@ -25,20 +27,36 @@ class NewsAPI extends ProviderAbstractor {
     private const TOP_HEADLINES_SOURCES_PATH = '/top-headlines/sources';
     private const TOP_HEADLINES_PATH = '/top-headlines';
 
-    public function __construct(Provider $provider) {
+    public function __construct(Provider $provider)
+    {
         $this->provider = $provider;
         $this->setApiKey($provider->api_key);
         $this->setEndPoint($provider->end_point);
     }
 
-    public function fetch() {
-        $this->fetchSources();
-        $this->fetchTopHeadingsSources();
-        $this->fetchArticles();
-        $this->fetchTopHeadingsArticles();
+    public function fetch()
+    {
+        Log::info("Starting NewsAPI fetch process", ['provider_id' => $this->provider->id]);
+
+        try {
+            $this->fetchSources();
+            $this->fetchTopHeadingsSources();
+            $this->fetchArticles();
+            $this->fetchTopHeadingsArticles();
+
+            Log::info("NewsAPI fetch process completed successfully", ['provider_id' => $this->provider->id]);
+        } catch (\Exception $e) {
+            Log::error("NewsAPI fetch process failed", [
+                'provider_id' => $this->provider->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
 
-    protected function setApiKey(string $apiKey): void {
+    protected function setApiKey(string $apiKey): void
+    {
         try {
             $this->apiKey = Crypt::decrypt($apiKey);
         } catch (\Throwable $e) {
@@ -47,19 +65,23 @@ class NewsAPI extends ProviderAbstractor {
         }
     }
 
-    protected function getApiKey(): string {
+    protected function getApiKey(): string
+    {
         return $this->apiKey;
     }
 
-    protected function setEndPoint(string $endPoint): void {
+    protected function setEndPoint(string $endPoint): void
+    {
         $this->endPoint = $endPoint;
     }
 
-    protected function getEndPoint(): string {
+    protected function getEndPoint(): string
+    {
         return $this->endPoint;
     }
 
-    protected function fetchSources(): void {
+    protected function fetchSources(): void
+    {
         foreach ($this->countries as $country) {
             $response = Http::timeout(30)->get($this->endPoint . self::SOURCES_PATH, ['apiKey' => $this->apiKey, 'country' => $country]);
             if ($response->successful()) {
@@ -73,7 +95,8 @@ class NewsAPI extends ProviderAbstractor {
         }
     }
 
-    protected function fetchArticles(): void {
+    protected function fetchArticles(): void
+    {
         $sources = Source::where("provider_id", $this->provider->id)->get();
         foreach ($sources as $source) {
             $response = Http::timeout(30)->get($this->endPoint . self::EVERYTHING_PATH, ['apiKey' => $this->apiKey, 'sources' => $source->slug]);
@@ -90,7 +113,8 @@ class NewsAPI extends ProviderAbstractor {
         }
     }
 
-    protected function fetchTopHeadingsSources(): void {
+    protected function fetchTopHeadingsSources(): void
+    {
         $response = Http::timeout(30)->get($this->endPoint . self::TOP_HEADLINES_SOURCES_PATH, ['apiKey' => $this->apiKey]);
         if ($response->successful()) {
             $data = $response->json();
@@ -102,7 +126,8 @@ class NewsAPI extends ProviderAbstractor {
         }
     }
 
-    protected function fetchTopHeadingsArticles(): void {
+    protected function fetchTopHeadingsArticles(): void
+    {
         foreach ($this->countries as $country) {
             $response = Http::timeout(30)->get($this->endPoint . self::TOP_HEADLINES_PATH, ['apiKey' => $this->apiKey, 'country' => $country]);
             if ($response->successful()) {
@@ -117,7 +142,8 @@ class NewsAPI extends ProviderAbstractor {
         }
     }
 
-    protected function createOrUpdateArticles(array $articles, bool $heading): void {
+    protected function createOrUpdateArticles(array $articles, bool $heading): void
+    {
         if (isset($articles['articles']) && is_array($articles['articles']) && count($articles['articles'])) {
             foreach ($articles['articles'] as $article) {
                 $source = isset($articles['source']) ? $articles['source'] : Source::where("slug", $article['source']['id'])->where("provider_id", $this->provider->id)->first();
@@ -157,7 +183,8 @@ class NewsAPI extends ProviderAbstractor {
         }
     }
 
-    protected function createOrUpdateSources(array $sources): void {
+    protected function createOrUpdateSources(array $sources): void
+    {
         if (isset($sources) && is_array($sources) && count($sources)) {
             foreach ($sources as $source) {
                 if (isset($source['category'])) {
