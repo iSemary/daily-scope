@@ -8,7 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable {
+class User extends Authenticatable
+{
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
@@ -45,8 +46,14 @@ class User extends Authenticatable {
         'password' => 'hashed',
     ];
 
-    public function userInterests() {
+    public function userInterests()
+    {
         return $this->hasMany(UserInterest::class, 'user_id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(\Modules\Country\Entities\Country::class);
     }
 
     /**
@@ -56,7 +63,8 @@ class User extends Authenticatable {
      * @param int typeId The `typeId` parameter represents the type of interest. It is used to identify the
      * type of item for which the interests are being synced.
      */
-    public function syncInterests(array $interests, int $typeId) {
+    public function syncInterests(array $interests, int $typeId)
+    {
         if (isset($interests) && is_array($interests) && count($interests)) {
             UserInterest::whereUserId($this->attributes['id'])->whereItemTypeId($typeId)->delete();
             foreach ($interests as $interest) {
@@ -79,7 +87,8 @@ class User extends Authenticatable {
      * @param int itemTypeId The `itemTypeId` parameter represents the type of the item being viewed. It is
      * an integer value that identifies the category or type of the item.
      */
-    public static function recordUserViewItem(int $userId, int $itemId, int $itemTypeId): void {
+    public static function recordUserViewItem(int $userId, int $itemId, int $itemTypeId): void
+    {
         UserView::updateOrCreate([
             'user_id' => $userId,
             'item_id' => $itemId,

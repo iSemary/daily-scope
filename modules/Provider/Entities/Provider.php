@@ -26,4 +26,14 @@ class Provider extends Model {
             $this->attributes['api_key'] = Crypt::encrypt($value);
         }
     }
+
+    public function sources()
+    {
+        return $this->hasMany(\Modules\Source\Entities\Source::class);
+    }
+
+    public function articles()
+    {
+        return $this->hasMany(\Modules\Article\Entities\Article::class);
+    }
 }

@@ -5,7 +5,8 @@ namespace Modules\User\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class UserView extends Model {
+class UserView extends Model
+{
     use HasFactory;
 
     /**
