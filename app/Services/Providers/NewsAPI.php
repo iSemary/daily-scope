@@ -3,12 +3,12 @@
 namespace App\Services\Providers;
 
 use App\Services\Abstractors\ProviderAbstractor;
+use App\Services\Mappers\MapperFactory;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Modules\Provider\Entities\Provider;
 use Modules\Source\Entities\Source;
-use Illuminate\Support\Str;
 use Modules\Article\Entities\Article;
 use Modules\Author\Entities\Author;
 use Modules\Category\Entities\Category;
@@ -21,6 +21,7 @@ class NewsAPI extends ProviderAbstractor
     private string $endPoint;
     private string $apiKey;
     private array $countries = ['de', 'us', 'nl'];
+    private $mapper;
 
     private const SOURCES_PATH = '/sources';
     private const EVERYTHING_PATH = '/everything';
@@ -32,6 +33,7 @@ class NewsAPI extends ProviderAbstractor
         $this->provider = $provider;
         $this->setApiKey($provider->api_key);
         $this->setEndPoint($provider->end_point);
+        $this->mapper = MapperFactory::create('NewsAPI');
     }
 
     public function fetch()
@@ -148,35 +150,30 @@ class NewsAPI extends ProviderAbstractor
             foreach ($articles['articles'] as $article) {
                 $source = isset($articles['source']) ? $articles['source'] : Source::where("slug", $article['source']['id'])->where("provider_id", $this->provider->id)->first();
                 if (isset($article['content'])) {
-                    $defaultAuthorName = $source->title . " Author";
+                    $mappedArticle = $this->mapper->mapArticle($article, $source, $heading);
+                    $mappedAuthor = $this->mapper->mapAuthor($article, $source);
+                    
                     $author = Author::updateOrCreate(
-                        [
-                            'name' => $article['author'] && !empty($article['author']) ? $article['author'] : $defaultAuthorName,
-                            'slug' => $article['author'] && !empty($article['author']) ? Str::slug($article['author']) : Str::slug($defaultAuthorName),
-                        ],
-                        [
-                            'source_id' => $source->id
-                        ]
+                        $mappedAuthor,
+                        ['source_id' => $source->id]
                     );
 
-                    $description = $article['description'] ?? "";
-
                     Article::updateOrCreate([
-                        'slug' => Str::slug(substr($article['title'], 0, 100))
+                        'slug' => $mappedArticle['slug']
                     ], [
-                        'title' => $article['title'],
+                        'title' => $mappedArticle['title'],
                         'author_id' => $author->id,
                         'source_id' => $source->id,
                         'provider_id' => $this->provider->id,
                         'category_id' => $source->category_id,
                         'language_id' => $source->language_id,
                         'country_id' => $source->country_id,
-                        'description' => substr($description, 0, 1000),
-                        'body' => $article['content'] ?? '-',
-                        'is_head' => $heading,
-                        'reference_url' => $article['url'],
-                        'image' => $article['urlToImage'],
-                        'published_at' => strtotime($article['publishedAt']),
+                        'description' => $mappedArticle['description'],
+                        'body' => $mappedArticle['body'],
+                        'is_head' => $mappedArticle['is_head'],
+                        'reference_url' => $mappedArticle['reference_url'],
+                        'image' => $mappedArticle['image'],
+                        'published_at' => $mappedArticle['published_at'],
                     ]);
                 }
             }
@@ -187,31 +184,28 @@ class NewsAPI extends ProviderAbstractor
     {
         if (isset($sources) && is_array($sources) && count($sources)) {
             foreach ($sources as $source) {
+                $mappedSource = $this->mapper->mapSource($source);
+                $mappedCategory = $this->mapper->mapCategory($source);
+                $mappedCountry = $this->mapper->mapCountry($source);
+                $mappedLanguage = $this->mapper->mapLanguage($source);
+
                 if (isset($source['category'])) {
-                    $category = Category::updateOrCreate([
-                        'title' => ucfirst($source['category']),
-                        'slug' => $source['category']
-                    ]);
+                    $category = Category::updateOrCreate($mappedCategory);
                 }
                 if (isset($source['country'])) {
-                    $country = Country::updateOrCreate([
-                        'name' => strtoupper($source['country']),
-                        'code' => $source['country']
-                    ]);
+                    $country = Country::updateOrCreate($mappedCountry);
                 }
                 if (isset($source['language'])) {
-                    $language = Language::updateOrCreate([
-                        'name' => strtoupper($source['language']),
-                        'code' => $source['language']
-                    ]);
+                    $language = Language::updateOrCreate($mappedLanguage);
                 }
+                
                 Source::updateOrCreate([
-                    'slug' => Str::slug($source['name']),
+                    'slug' => $mappedSource['slug'],
                 ], [
-                    'title' => $source['name'],
-                    'url' => $source['url'] ?? '/',
+                    'title' => $mappedSource['title'],
+                    'url' => $mappedSource['url'],
                     'provider_id' => $this->provider->id,
-                    'description' => $source['description'],
+                    'description' => $mappedSource['description'],
                     'category_id' => $category->id,
                     'country_id' => $country->id,
                     'language_id' => $language->id,
