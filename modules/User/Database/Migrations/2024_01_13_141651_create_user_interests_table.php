@@ -11,8 +11,8 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('user_interests', function (Blueprint $table) {
             $table->id();
-            $table->integer("user_id");
-            $table->integer("item_id");
+            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("item_id");
             $table->tinyInteger("item_type_id");
             $table->softDeletes();
             $table->timestamps();
