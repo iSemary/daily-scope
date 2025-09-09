@@ -32,7 +32,7 @@ return new class extends Migration
                 $table->foreign('source_id')->references('id')->on('sources')->onDelete('cascade');
             });
         }
-        
+
         if (!$this->foreignKeyExists('articles', 'articles_author_id_foreign')) {
             Schema::table('articles', function (Blueprint $table) {
                 $table->foreign('author_id')->references('id')->on('authors')->onDelete('cascade');
@@ -44,19 +44,19 @@ return new class extends Migration
                 $table->foreign('provider_id')->references('id')->on('providers')->onDelete('cascade');
             });
         }
-        
+
         if (!$this->foreignKeyExists('sources', 'sources_category_id_foreign')) {
             Schema::table('sources', function (Blueprint $table) {
                 $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
             });
         }
-        
+
         if (!$this->foreignKeyExists('sources', 'sources_country_id_foreign')) {
             Schema::table('sources', function (Blueprint $table) {
                 $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
             });
         }
-        
+
         if (!$this->foreignKeyExists('sources', 'sources_language_id_foreign')) {
             Schema::table('sources', function (Blueprint $table) {
                 $table->foreign('language_id')->references('id')->on('languages')->onDelete('set null');
@@ -172,14 +172,30 @@ return new class extends Migration
      */
     private function foreignKeyExists(string $table, string $constraintName): bool
     {
-        $constraints = DB::select("
-            SELECT CONSTRAINT_NAME 
-            FROM information_schema.KEY_COLUMN_USAGE 
-            WHERE TABLE_SCHEMA = DATABASE() 
-            AND TABLE_NAME = ? 
-            AND CONSTRAINT_NAME = ?
-        ", [$table, $constraintName]);
+        $driver = DB::getDriverName();
 
-        return count($constraints) > 0;
+        if ($driver === 'sqlite') {
+            // SQLite
+            $constraints = DB::select("
+                SELECT name 
+                FROM sqlite_master 
+                WHERE type = 'table' 
+                AND name = ? 
+                AND sql LIKE ?
+            ", [$table, "%{$constraintName}%"]);
+
+            return count($constraints) > 0;
+        } else {
+            // MySQL
+            $constraints = DB::select("
+                SELECT CONSTRAINT_NAME 
+                FROM information_schema.KEY_COLUMN_USAGE 
+                WHERE TABLE_SCHEMA = DATABASE() 
+                AND TABLE_NAME = ? 
+                AND CONSTRAINT_NAME = ?
+            ", [$table, $constraintName]);
+
+            return count($constraints) > 0;
+        }
     }
 };
