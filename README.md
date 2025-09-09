@@ -6,6 +6,7 @@ Data Sources Used: NewsAPI - NewsAPIAi - NewsDataIO
 
 -   [About](#about)
 -   [Features](#features)
+-   [Cache Service](#cache-service)
 -   [Technologies](#technologies)
 -   [Get Started](#get-started)
     -   [Postman Collection](#postman-collection)
@@ -31,6 +32,23 @@ It fetches articles from multiple external sources, stores them locally, and exp
 4. **Mobile-Responsive Design:**
     - Optimize the website for a seamless mobile viewing experience.
 
+## Cache Service
+
+The application implements **Redis caching** to improve performance and reduce database load:
+
+### Cached Endpoints
+- **Top Headlines API** (`/api/v1.0/top-headings`) - 15-minute cache
+- **Preferred Articles API** (`/api/v1.0/preferred/articles`) - 10-minute cache
+
+### Cache Management
+```bash
+# Clear all home related caches
+php artisan cache:clear-home
+
+# Clear cache for specific user
+php artisan cache:clear-home --user=1
+```
+
 ## Technologies
 
 ### Backend Framework
@@ -51,6 +69,7 @@ It fetches articles from multiple external sources, stores them locally, and exp
 ### Database & Caching
 
 -   **MySQL** - Primary Database
+-   **Redis** - Caching
 
 ### Infrastructure
 
