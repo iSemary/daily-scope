@@ -11,6 +11,7 @@ Data Sources Used: NewsAPI - NewsAPIAi - NewsDataIO
     -   [Postman Collection](#postman-collection)
     -   [Installation](#installation)
     -   [Docker](#docker)
+    -   [Environment Configuration](#environment-configuration)
     -   [Register New Provider](#register-new-provider)
     -   [Fetch News](#fetch-news)
 
@@ -96,25 +97,56 @@ It fetches articles from multiple external sources, stores them locally, and exp
 docker-compose up
 ```
 
+## Environment Configuration
+
+### API Keys Setup
+
+The application uses environment variables for API keys to ensure security and flexibility across different environments.
+
+#### Required Environment Variables
+
+Add the following variables to your `.env` file:
+
+```env
+# News Provider API Keys
+NEWSAPI_API_KEY=
+NEWSDATAIO_API_KEY=
+NEWSAPIAI_API_KEY=
+```
+
+#### API Keys for Testing
+
+**📋 Note:** The API keys have been added to the Assessment PDF file to make it easy for testing the application. You can find the working API keys in the provided documentation.
+
 ## Register New Provider
 
-### 🔑 Please note that i've added a fresh keys to be able to test the 3 service providers.
+### 🔑 Please note that i've added fresh keys to be able to test the 3 service providers.
 
 ### 🔒 The api_key column in the database is encrypted.
 
-1- By Running the Database Seeder, Which I've added 3 service provider with it's fresh keys to easy to test it
+### ProviderSeeder
 
-```
-php artisan db:seed --class=modules\\Provider\\Database\\Seeders\\ProviderSeeder
+The application includes a `ProviderSeeder` that automatically seeds the database with the three main news providers:
+
+- **NewsAPI** - https://newsapi.org/v2/
+- **NewsDataIO** - https://newsdata.io/api/1/
+- **NewsAPIAi** - http://eventregistry.org/api/v1/
+
+#### Seeding Providers
+
+1- **By Running the Database Seeder** (Recommended):
+
+```bash
+php artisan db:seed --class=Modules\\Provider\\Database\\Seeders\\ProviderSeeder
 ```
 
-2- Through the POST API in the Postman Collection
+This will automatically create the three providers with their respective API keys from your environment variables.
+
+2- **Through the POST API** in the Postman Collection:
 
 ```
 {{API_URL}}/{{API_VERSION}}/providers/register
 ```
-
-Please note while registering a new provider and building the new provider class, Extend the "App\Services\Abstractors\ProviderAbstractor" class to make sure that everything is well structured
 
 ## Fetch News
 
