@@ -72,20 +72,6 @@ services:
     networks:
       - daily-scope-network
 
-  # Node.js for Vite (Development)
-  node:
-    image: node:18-alpine
-    container_name: daily-scope-node
-    restart: unless-stopped
-    working_dir: /var/www/html
-    volumes:
-      - ./:/var/www/html
-    command: sh -c "npm install && npm run dev"
-    networks:
-      - daily-scope-network
-    depends_on:
-      - app
-
   # Queue Worker
   queue:
     build:
