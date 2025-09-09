@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        php-version: [8.3]
+        php-version: [8.4]
 
     services:
       mysql:
@@ -178,7 +178,7 @@ jobs:
             
             # Restart PHP-FPM and web server
             echo "🔄 Restarting services..."
-            sudo systemctl reload php8.3-fpm || sudo systemctl reload php8.2-fpm || sudo systemctl reload php8.1-fpm || echo "PHP-FPM reload failed"
+            sudo systemctl reload php8.4-fpm || echo "PHP-FPM reload failed"
             sudo systemctl reload nginx || sudo systemctl reload apache2 || echo "Web server reload failed"
             
             # Check if the application is responding
