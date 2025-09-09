@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use modules\Article\Transformers\ArticlesResource;
+use modules\User\Entities\UserInterest;
+use modules\User\Interfaces\UserInterestTypes;
 
 class Article extends Model {
     use HasFactory, SoftDeletes;
@@ -77,5 +80,56 @@ class Article extends Model {
     public function scopeByRelatedItemSlug(Builder $query, string $itemSlug, string $itemTable, string $itemForeignKey): Builder {
         return $query->join($itemTable, $itemTable . '.id', 'articles.' . $itemForeignKey)
             ->where($itemTable . '.slug', $itemSlug);
+    }
+
+    /**
+     * Get preferred source articles for a user.
+     * 
+     * @param int $userId The user ID
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public static function getPreferredSourceArticles(int $userId) {
+        $sourceIds = UserInterest::getItemIds($userId, UserInterestTypes::SOURCE);
+        $sourceArticles = Article::with(['language', 'country', 'source', 'author', 'category', 'provider'])
+            ->whereIn("articles.source_id", $sourceIds)
+            ->orderByDesc("published_at")
+            ->limit(8)
+            ->get();
+
+        return ArticlesResource::collection($sourceArticles);
+    }
+
+    /**
+     * Get preferred category articles for a user.
+     * 
+     * @param int $userId The user ID
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public static function getPreferredCategoryArticles(int $userId) {
+        $categoryIds = UserInterest::getItemIds($userId, UserInterestTypes::CATEGORY);
+        $categoryArticles = Article::withArticleRelations()
+            ->whereIn("articles.category_id", $categoryIds)
+            ->orderByDesc("published_at")
+            ->limit(9)
+            ->get();
+
+        return ArticlesResource::collection($categoryArticles);
+    }
+
+    /**
+     * Get preferred author articles for a user.
+     * 
+     * @param int $userId The user ID
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public static function getPreferredAuthorArticles(int $userId) {
+        $authorIds = UserInterest::getItemIds($userId, UserInterestTypes::AUTHOR);
+        $authorArticles = Article::withArticleRelations()
+            ->whereIn("articles.author_id", $authorIds)
+            ->orderByDesc("published_at")
+            ->limit(9)
+            ->get();
+
+        return ArticlesResource::collection($authorArticles);
     }
 }

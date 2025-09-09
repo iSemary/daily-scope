@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\HomeController;
 use Illuminate\Support\Facades\Route;
+use modules\Article\Http\Controllers\Api\ArticleController;
 
 /**
  * API Version 1.0
@@ -8,6 +10,20 @@ use Illuminate\Support\Facades\Route;
  * This file contains the main API routes for version 1.0
  * Module-specific routes are included explicitly for better performance and clarity
  */
+
+// Home Routes
+Route::get("top-headings", [HomeController::class, "topHeadings"]);
+
+// User preferred news
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get("preferred/articles", [HomeController::class, "preferredArticles"]);
+});
+
+// Today's news
+Route::get("today", [ArticleController::class, "todayArticles"]);
+
+// Search
+Route::get("search", [ArticleController::class, "find"]);
 
 // Author Module Routes
 Route::group([], base_path('modules/Author/Routes/api.php'));
