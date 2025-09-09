@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Language\Services;
+namespace Modules\Language\Services;
 
 use Illuminate\Database\Eloquent\Collection;
-use modules\Language\Entities\Language;
-use modules\Language\Interfaces\LanguageInterface;
+use Modules\Language\Entities\Language;
+use Modules\Language\Interfaces\LanguageInterface;
 
 class LanguageService
 {

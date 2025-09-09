@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Language\Providers;
+namespace Modules\Language\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use modules\Language\Interfaces\LanguageInterface;
-use modules\Language\Repositories\LanguageRepository;
+use Modules\Language\Interfaces\LanguageInterface;
+use Modules\Language\Repositories\LanguageRepository;
 
 class LanguageModuleServiceProvider extends ServiceProvider
 {

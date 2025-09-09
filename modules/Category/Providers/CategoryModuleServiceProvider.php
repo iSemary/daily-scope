@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Category\Providers;
+namespace Modules\Category\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use modules\Category\Interfaces\CategoryInterface;
-use modules\Category\Repositories\CategoryRepository;
+use Modules\Category\Interfaces\CategoryInterface;
+use Modules\Category\Repositories\CategoryRepository;
 
 class CategoryModuleServiceProvider extends ServiceProvider
 {

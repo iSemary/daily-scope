@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\User\Entities;
+namespace Modules\User\Entities;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;

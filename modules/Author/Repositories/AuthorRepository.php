@@ -1,11 +1,11 @@
 <?php
 
-namespace modules\Author\Repositories;
+namespace Modules\Author\Repositories;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use modules\Author\Entities\Author;
-use modules\Author\Interfaces\AuthorInterface;
+use Modules\Author\Entities\Author;
+use Modules\Author\Interfaces\AuthorInterface;
 
 class AuthorRepository implements AuthorInterface
 {
@@ -26,7 +26,7 @@ class AuthorRepository implements AuthorInterface
 
     public function getArticlesBySourceAndAuthorSlug(string $sourceSlug, string $authorSlug): LengthAwarePaginator
     {
-        return \modules\Article\Entities\Article::withArticleRelations()
+        return \Modules\Article\Entities\Article::withArticleRelations()
             ->bySourceAndAuthorSlug($sourceSlug, $authorSlug)
             ->paginate(20);
     }

@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Interfaces\ProviderInterface;
-use modules\Provider\Entities\Provider;
+use Modules\Provider\Entities\Provider;
 
 class ScrapNews {
     public function run(): void {

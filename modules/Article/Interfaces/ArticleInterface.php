@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Article\Interfaces;
+namespace Modules\Article\Interfaces;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use modules\Article\Entities\Article;
+use Modules\Article\Entities\Article;
 
 interface ArticleInterface
 {

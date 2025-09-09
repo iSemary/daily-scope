@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\User\Providers;
+namespace Modules\User\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use modules\User\Interfaces\UserInterface;
-use modules\User\Repositories\UserRepository;
+use Modules\User\Interfaces\UserInterface;
+use Modules\User\Repositories\UserRepository;
 
 class UserModuleServiceProvider extends ServiceProvider
 {

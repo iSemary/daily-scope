@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\User\Repositories;
+namespace Modules\User\Repositories;
 
-use modules\User\Entities\User;
-use modules\User\Interfaces\UserInterface;
-use modules\User\Interfaces\UserInterestTypes;
+use Modules\User\Entities\User;
+use Modules\User\Interfaces\UserInterface;
+use Modules\User\Interfaces\UserInterestTypes;
 
 class UserRepository implements UserInterface
 {

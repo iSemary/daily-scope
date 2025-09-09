@@ -1,12 +1,12 @@
 <?php
 
-namespace modules\Author\Services;
+namespace Modules\Author\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use modules\Author\Entities\Author;
-use modules\Author\Interfaces\AuthorInterface;
-use modules\Article\Transformers\ArticlesCollection;
+use Modules\Author\Entities\Author;
+use Modules\Author\Interfaces\AuthorInterface;
+use Modules\Article\Transformers\ArticlesCollection;
 
 class AuthorService
 {

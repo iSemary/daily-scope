@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\Article\Transformers;
+namespace Modules\Article\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,12 +14,12 @@ class ArticleResource extends JsonResource {
             'body' => $this->body,
             'image' => $this->image,
             'published_at' => date('F j, Y g:i a', $this->published_at),
-            'source' => new \modules\Source\Transformers\SourceResource($this->whenLoaded('source')),
-            'author' => new \modules\Author\Transformers\AuthorResource($this->whenLoaded('author')),
-            'category' => new \modules\Category\Transformers\CategoryResource($this->whenLoaded('category')),
-            'country' => new \modules\Country\Transformers\CountryResource($this->whenLoaded('country')),
-            'language' => new \modules\Language\Transformers\LanguageResource($this->whenLoaded('language')),
-            'provider' => new \modules\Provider\Transformers\ProviderResource($this->whenLoaded('provider')),
+            'source' => new \Modules\Source\Transformers\SourceResource($this->whenLoaded('source')),
+            'author' => new \Modules\Author\Transformers\AuthorResource($this->whenLoaded('author')),
+            'category' => new \Modules\Category\Transformers\CategoryResource($this->whenLoaded('category')),
+            'country' => new \Modules\Country\Transformers\CountryResource($this->whenLoaded('country')),
+            'language' => new \Modules\Language\Transformers\LanguageResource($this->whenLoaded('language')),
+            'provider' => new \Modules\Provider\Transformers\ProviderResource($this->whenLoaded('provider')),
         ];
     }
 }

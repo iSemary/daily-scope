@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Author\Interfaces;
+namespace Modules\Author\Interfaces;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use modules\Author\Entities\Author;
+use Modules\Author\Entities\Author;
 
 interface AuthorInterface
 {

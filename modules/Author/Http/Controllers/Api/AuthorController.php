@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Author\Http\Controllers\Api;
+namespace Modules\Author\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\Author\Services\AuthorService;
+use Modules\Author\Services\AuthorService;
 
 class AuthorController extends ApiController
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace modules\User\Http\Controllers\Api;
+namespace Modules\User\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\User\Http\Requests\ProfileRequest;
-use modules\User\Services\UserService;
+use Modules\User\Http\Requests\ProfileRequest;
+use Modules\User\Services\UserService;
 
 class UserController extends ApiController
 {

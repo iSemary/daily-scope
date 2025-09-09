@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Language\Http\Controllers\Api;
+namespace Modules\Language\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\Language\Services\LanguageService;
+use Modules\Language\Services\LanguageService;
 
 class LanguageController extends ApiController
 {

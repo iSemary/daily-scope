@@ -1,11 +1,11 @@
 <?php
 
-namespace modules\Source\Services;
+namespace Modules\Source\Services;
 
 use Illuminate\Database\Eloquent\Collection;
-use modules\Source\Entities\Source;
-use modules\Source\Interfaces\SourceInterface;
-use modules\Article\Transformers\ArticlesCollection;
+use Modules\Source\Entities\Source;
+use Modules\Source\Interfaces\SourceInterface;
+use Modules\Article\Transformers\ArticlesCollection;
 
 class SourceService
 {

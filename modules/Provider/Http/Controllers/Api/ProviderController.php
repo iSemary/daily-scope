@@ -1,13 +1,13 @@
 <?php
 
-namespace modules\Provider\Http\Controllers\Api;
+namespace Modules\Provider\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use App\Services\ScrapNews;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Crypt;
-use modules\Provider\Services\ProviderService;
-use modules\Provider\Http\Requests\CreateProviderRequest;
+use Modules\Provider\Services\ProviderService;
+use Modules\Provider\Http\Requests\CreateProviderRequest;
 
 class ProviderController extends ApiController
 {

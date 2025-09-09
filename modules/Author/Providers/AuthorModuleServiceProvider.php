@@ -1,10 +1,10 @@
 <?php
 
-namespace modules\Author\Providers;
+namespace Modules\Author\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use modules\Author\Interfaces\AuthorInterface;
-use modules\Author\Repositories\AuthorRepository;
+use Modules\Author\Interfaces\AuthorInterface;
+use Modules\Author\Repositories\AuthorRepository;
 
 class AuthorModuleServiceProvider extends ServiceProvider
 {
