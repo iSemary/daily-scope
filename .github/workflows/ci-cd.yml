@@ -68,7 +68,7 @@ jobs:
 
       - name: Create Database
         run: |
-          mysql --host 127.0.0.1 --port 3306 -u root -p root_password -e "CREATE DATABASE IF NOT EXISTS daily_scope_test;"
+          mysql --host 127.0.0.1 --port 3306 -u root -e "CREATE DATABASE IF NOT EXISTS daily_scope_test;"
 
       - name: Run Database Migrations
         run: php artisan migrate --force
