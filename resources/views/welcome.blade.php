@@ -16,8 +16,8 @@
         }
 
         .markdown-content h1 {
-            color: #0d6efd;
-            border-bottom: 2px solid #0d6efd;
+            color: #11607E;
+            border-bottom: 2px solid #11607E;
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
@@ -45,7 +45,7 @@
             background-color: #f8f9fa;
             padding: 15px;
             border-radius: 5px;
-            border-left: 4px solid #0d6efd;
+            border-left: 4px solid #11607E;
         }
 
         .markdown-content blockquote {
@@ -61,7 +61,7 @@
         }
 
         .markdown-content a {
-            color: #0d6efd;
+            color: #11607E;
             text-decoration: none;
         }
 
@@ -81,12 +81,16 @@
             text-align: center;
             padding: 20px;
         }
+
+        .bg-main {
+            background-color: #11607E !important;
+        }
     </style>
 </head>
 
 <body>
     <!-- Header -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary bg-main">
         <div class="container">
             <a class="navbar-brand fw-bold" href="#">
                 {{ config('app.name', 'Daily Scope') }}
@@ -121,8 +125,7 @@
     <!-- Footer -->
     <footer class="bg-light text-center text-muted py-4 mt-5">
         <div class="container">
-            <p class="mb-0">&copy; {{ date('Y') }} {{ config('app.name', 'Daily Scope') }}. Built with Laravel and
-                Bootstrap.</p>
+            <p class="mb-0">&copy; {{ date('Y') }} {{ config('app.name', 'Daily Scope') }}. Built with Laravel, MySQL, Redis, and Elasticsearch.</p>
         </div>
     </footer>
 

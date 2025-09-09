@@ -35,7 +35,7 @@ It fetches articles from multiple external sources, stores them locally, and exp
 
 ## Database Diagram
 
-![Daily Scope Diagram](http://daily-scope.abdelrahman.online/images/daily_scope_diagram.png)
+![Daily Scope Diagram](https://daily-scope.abdelrahman.online/images/daily_scope_diagram.png)
 
 ## Cache Service
 
