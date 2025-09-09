@@ -1,61 +1,133 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Daily Scope
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Live Preview: (https://daily-scope.abdelrahman.online)
 
-## About Laravel
+Data Sources Used: NewsAPI - NewsAPIAi - NewsDataIO
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   [About](#about)
+-   [Features](#features)
+-   [Technologies](#technologies)
+-   [Get Started](#get-started)
+    -   [Postman Collection](#postman-collection)
+    -   [Installation](#installation)
+    -   [Docker](#docker)
+    -   [Register New Provider](#register-new-provider)
+    -   [Fetch News](#fetch-news)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## About
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+This project is a **backend service** for a news provider website.  
+It fetches articles from multiple external sources, stores them locally, and exposes clean API endpoints for frontend consumption.
 
-## Learning Laravel
+## Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. **User Authentication & Registration:**
+    - Enable account creation and login for saving preferences.
+2. **Article Search & Filtering:**
+    - Implement keyword-based search and filters for date, category, and source.
+3. **Personalized News Feed:**
+    - Allow users to customize their feed with preferred sources, categories, and authors.
+4. **Mobile-Responsive Design:**
+    - Optimize the website for a seamless mobile viewing experience.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Technologies
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Backend Framework
 
-## Laravel Sponsors
+-   **PHP**: ^8.2
+-   **Laravel**: ^12.0
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Core Packages
 
-### Premium Partners
+-   **Laravel Modules**: ^12.0 - Modular Architecture
+-   **Laravel Passport**: ^13.2 - API Authentication
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Development Tools
 
-## Contributing
+-   **PHP CS Fixer**: ^3.87 - Code Style Fixer
+-   **PHPUnit**: ^11.5.3 - Testing Framework
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Database & Caching
 
-## Code of Conduct
+-   **MySQL** - Primary Database
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Infrastructure
 
-## Security Vulnerabilities
+-   **Docker** - Containerization
+-   **Nginx** - Web Server
+-   **PHP-FPM** - Process Manager
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Get Started
 
-## License
+### Postman Collection
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+[Open With Postman](https://www.postman.com/isemary/workspace/daily-scope)
+
+### Installation
+
+#### 1. Clone The Repository
+
+    git clone https://github.com/iSemary/daily-scope.git
+
+#### 2. Install Required Dependencies
+
+    composer i
+
+#### 3. Migrate Tables
+
+    php artisan migrate
+    php artisan module:migrate
+
+#### 4. Install Passport Keys
+
+    php artisan passport:install
+
+#### 5. Generate Laravel App Key
+
+    php artisan key:generate
+
+#### 6. Run application local
+
+    php artisan serve
+
+## Docker
+
+```
+docker-compose up
+```
+
+## Register New Provider
+
+### 🔑 Please note that i've added a fresh keys to be able to test the 3 service providers.
+
+### 🔒 The api_key column in the database is encrypted.
+
+1- By Running the Database Seeder, Which I've added 3 service provider with it's fresh keys to easy to test it
+
+```
+php artisan db:seed --class=modules\\Provider\\Database\\Seeders\\ProviderSeeder
+```
+
+2- Through the POST API in the Postman Collection
+
+```
+{{API_URL}}/{{API_VERSION}}/providers/register
+```
+
+Please note while registering a new provider and building the new provider class, Extend the "App\Services\Abstractors\ProviderAbstractor" class to make sure that everything is well structured
+
+## Fetch News
+
+There's a 2 ways to fetch the articles, categories, authors, and sources from the service providers.
+
+1- By triggering the sync command through GET API call [For Test Purpose Only]:
+
+```
+{{API_URL}}/{{API_VERSION}}/providers/sync
+```
+
+2- By Running the command:
+
+```
+php artisan app:sync-news
+```
