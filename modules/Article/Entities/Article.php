@@ -22,12 +22,8 @@ class Article extends Model
         'body',
         'image',
         'is_head',
-        'provider_id',
         'source_id',
-        'category_id',
         'author_id',
-        'language_id',
-        'country_id',
         'published_at'
     ];
 
@@ -41,24 +37,25 @@ class Article extends Model
         return $this->belongsTo(\Modules\Author\Entities\Author::class);
     }
 
-    public function category()
+    // Accessor methods for getting related data through source
+    public function getCategoryAttribute()
     {
-        return $this->belongsTo(\Modules\Category\Entities\Category::class);
+        return $this->source ? $this->source->category : null;
     }
 
-    public function country()
+    public function getCountryAttribute()
     {
-        return $this->belongsTo(\Modules\Country\Entities\Country::class);
+        return $this->source ? $this->source->country : null;
     }
 
-    public function language()
+    public function getLanguageAttribute()
     {
-        return $this->belongsTo(\Modules\Language\Entities\Language::class);
+        return $this->source ? $this->source->language : null;
     }
 
-    public function provider()
+    public function getProviderAttribute()
     {
-        return $this->belongsTo(\Modules\Provider\Entities\Provider::class);
+        return $this->source ? $this->source->provider : null;
     }
 
     public function scopeBySourceAndArticleSlug(Builder $query, string $sourceSlug, string $articleSlug): Builder
@@ -78,24 +75,26 @@ class Article extends Model
 
     public function scopeWithArticleRelations(Builder $query): Builder
     {
-        return $query->select(['articles.id', 'articles.title', 'articles.slug', 'articles.description', 'reference_url', 'body', 'image', 'is_head', 'articles.provider_id', 'articles.source_id', 'articles.category_id', 'author_id', 'articles.language_id', 'articles.country_id', 'published_at'])->with([
+        return $query->select(['articles.id', 'articles.title', 'articles.slug', 'articles.description', 'reference_url', 'body', 'image', 'is_head', 'articles.source_id', 'author_id', 'published_at'])->with([
             'source' => function ($query) {
-                $query->select('id', 'title', 'slug', 'description');
+                $query->select('id', 'title', 'slug', 'description', 'provider_id', 'category_id', 'country_id', 'language_id')
+                    ->with([
+                        'category' => function ($q) {
+                            $q->select('id', 'title', 'slug');
+                        },
+                        'country' => function ($q) {
+                            $q->select('id', 'name', 'code');
+                        },
+                        'language' => function ($q) {
+                            $q->select('id', 'name', 'code');
+                        },
+                        'provider' => function ($q) {
+                            $q->select('id', 'name');
+                        },
+                    ]);
             },
             'author' => function ($query) {
                 $query->select('id', 'name', 'slug');
-            },
-            'category' => function ($query) {
-                $query->select('id', 'title', 'slug');
-            },
-            'country' => function ($query) {
-                $query->select('id', 'name', 'code');
-            },
-            'language' => function ($query) {
-                $query->select('id', 'name', 'code');
-            },
-            'provider' => function ($query) {
-                $query->select('id', 'name');
             },
         ]);
     }
@@ -134,7 +133,9 @@ class Article extends Model
     {
         $categoryIds = UserInterest::getItemIds($userId, UserInterestTypes::CATEGORY);
         $categoryArticles = Article::withArticleRelations()
-            ->whereIn("articles.category_id", $categoryIds)
+            ->whereHas('source', function ($query) use ($categoryIds) {
+                $query->whereIn('category_id', $categoryIds);
+            })
             ->orderByDesc("published_at")
             ->limit(9)
             ->get();
