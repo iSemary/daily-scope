@@ -12,6 +12,21 @@ return new class extends Migration
      */
     public function up(): void
     {
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->unsignedBigInteger('country_id')->nullable()->change();
+        });
+
+        Schema::table('categories', function (Blueprint $table) {
+            $table->unsignedBigInteger('parent_id')->nullable()->change();
+        });
+
+        Schema::table('sources', function (Blueprint $table) {
+            $table->unsignedBigInteger('category_id')->nullable()->change();
+            $table->unsignedBigInteger('country_id')->nullable()->change();
+            $table->unsignedBigInteger('language_id')->nullable()->change();
+        });
+
         if (!$this->foreignKeyExists('articles', 'articles_source_id_foreign')) {
             Schema::table('articles', function (Blueprint $table) {
                 $table->foreign('source_id')->references('id')->on('sources')->onDelete('cascade');
@@ -84,37 +99,72 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->dropForeign(['source_id']);
-            $table->dropForeign(['author_id']);
-        });
+        // Drop foreign key constraints first (only if they exist)
+        if ($this->foreignKeyExists('articles', 'articles_source_id_foreign')) {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->dropForeign(['source_id']);
+            });
+        }
 
-        Schema::table('sources', function (Blueprint $table) {
-            $table->dropForeign(['provider_id']);
-            $table->dropForeign(['category_id']);
-            $table->dropForeign(['country_id']);
-            $table->dropForeign(['language_id']);
-        });
+        if ($this->foreignKeyExists('articles', 'articles_author_id_foreign')) {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->dropForeign(['author_id']);
+            });
+        }
 
-        Schema::table('authors', function (Blueprint $table) {
-            $table->dropForeign(['source_id']);
-        });
+        if ($this->foreignKeyExists('sources', 'sources_provider_id_foreign')) {
+            Schema::table('sources', function (Blueprint $table) {
+                $table->dropForeign(['provider_id']);
+            });
+        }
 
-        Schema::table('categories', function (Blueprint $table) {
-            $table->dropForeign(['parent_id']);
-        });
+        if ($this->foreignKeyExists('sources', 'sources_category_id_foreign')) {
+            Schema::table('sources', function (Blueprint $table) {
+                $table->dropForeign(['category_id']);
+            });
+        }
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['country_id']);
-        });
+        if ($this->foreignKeyExists('sources', 'sources_country_id_foreign')) {
+            Schema::table('sources', function (Blueprint $table) {
+                $table->dropForeign(['country_id']);
+            });
+        }
 
-        Schema::table('user_views', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-        });
+        if ($this->foreignKeyExists('sources', 'sources_language_id_foreign')) {
+            Schema::table('sources', function (Blueprint $table) {
+                $table->dropForeign(['language_id']);
+            });
+        }
 
-        Schema::table('user_interests', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-        });
+        if ($this->foreignKeyExists('authors', 'authors_source_id_foreign')) {
+            Schema::table('authors', function (Blueprint $table) {
+                $table->dropForeign(['source_id']);
+            });
+        }
+
+        if ($this->foreignKeyExists('categories', 'categories_parent_id_foreign')) {
+            Schema::table('categories', function (Blueprint $table) {
+                $table->dropForeign(['parent_id']);
+            });
+        }
+
+        if ($this->foreignKeyExists('users', 'users_country_id_foreign')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropForeign(['country_id']);
+            });
+        }
+
+        if ($this->foreignKeyExists('user_views', 'user_views_user_id_foreign')) {
+            Schema::table('user_views', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+            });
+        }
+
+        if ($this->foreignKeyExists('user_interests', 'user_interests_user_id_foreign')) {
+            Schema::table('user_interests', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+            });
+        }
     }
 
     /**
