@@ -32,7 +32,7 @@ return new class extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('country_id')->change();
+            $table->unsignedBigInteger('country_id')->nullable()->change();
         });
 
         Schema::table('user_views', function (Blueprint $table) {
@@ -72,7 +72,7 @@ return new class extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('country_id')->change();
+            $table->integer('country_id')->nullable()->change();
         });
 
         Schema::table('user_views', function (Blueprint $table) {
