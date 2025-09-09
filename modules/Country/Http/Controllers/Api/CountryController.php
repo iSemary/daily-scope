@@ -4,17 +4,26 @@ namespace modules\Country\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\Country\Entities\Country;
+use modules\Country\Services\CountryService;
 
-class CountryController extends ApiController {
+class CountryController extends ApiController
+{
+    private CountryService $countryService;
 
-    public function index(): JsonResponse {
-        $countries = Country::select(['id', 'name', 'code'])->orderBy("name")->get();
+    public function __construct(CountryService $countryService)
+    {
+        $this->countryService = $countryService;
+    }
+
+    public function index(): JsonResponse
+    {
+        $countries = $this->countryService->list();
         return $this->return(200, "Countries fetched successfully", ['countries' => $countries]);
     }
 
-    public function show(string $code): JsonResponse {
-        $country = Country::where('code', $code)->first();
+    public function show(string $code): JsonResponse
+    {
+        $country = $this->countryService->showByCode($code);
         if (!$country) {
             return $this->return(404, "Country not found");
         }

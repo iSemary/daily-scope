@@ -4,69 +4,29 @@ namespace modules\User\Http\Controllers\Api;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use modules\User\Entities\User;
 use modules\User\Http\Requests\ProfileRequest;
-use modules\User\Interfaces\UserInterestTypes;
+use modules\User\Services\UserService;
 
-class UserController extends ApiController {
+class UserController extends ApiController
+{
+    private UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     /**
      * The function `getProfile` retrieves the profile data of an authenticated user and returns it as a
      * JSON response.
      * 
      * @return JsonResponse A JsonResponse object is being returned.
      */
-    public function getProfile(): JsonResponse {
+    public function getProfile(): JsonResponse
+    {
         $user = $this->getAuthenticatedUser();
-        $profile = $this->prepareProfileData($user);
+        $profile = $this->userService->getProfile($user);
         return $this->return(200, "Profile fetched successfully", ['profile' => $profile]);
-    }
-
-    /**
-     * The function prepares profile data for a user, including the user object and their interests.
-     * 
-     * @param User user The user parameter is an instance of the User class.
-     * 
-     * @return array An array is being returned.
-     */
-    private function prepareProfileData(User $user): array {
-        return [
-            'user' => $user,
-            'interests' => $this->prepareUserInterests($user)
-        ];
-    }
-
-    /**
-     * The function prepares and formats a user's interests into an array with categories, authors, and
-     * sources.
-     * 
-     * @param User user The "user" parameter is an instance of the User class.
-     * 
-     * @return array an array called .
-     */
-    private function prepareUserInterests(User $user): array {
-        $formattedUserInterests = [
-            "categories" => [],
-            "authors" => [],
-            "sources" => [],
-        ];
-
-        $userInterests = $user->userInterests()->get();
-
-        foreach ($userInterests as $interest) {
-            switch ($interest->item_type_id) {
-                case UserInterestTypes::CATEGORY:
-                    $formattedUserInterests['categories'][] = $interest->item_id;
-                    break;
-                case UserInterestTypes::AUTHOR:
-                    $formattedUserInterests['authors'][] = $interest->item_id;
-                    break;
-                case UserInterestTypes::SOURCE:
-                    $formattedUserInterests['sources'][] = $interest->item_id;
-                    break;
-            }
-        }
-
-        return $formattedUserInterests;
     }
 
     /**
@@ -80,15 +40,12 @@ class UserController extends ApiController {
      * @return JsonResponse a JsonResponse with a status code of 200 and a message of 'Profile updated
      * successfully'.
      */
-    public function updateProfile(ProfileRequest $profileRequest): JsonResponse {
+    public function updateProfile(ProfileRequest $profileRequest): JsonResponse
+    {
         $user = $this->getAuthenticatedUser();
         $validatedData = $profileRequest->validated();
-        // Update user info
-        $user->update($validatedData);
-        // Update user preferences
-        $user->syncInterests($validatedData['categories'], UserInterestTypes::CATEGORY);
-        $user->syncInterests($validatedData['authors'], UserInterestTypes::AUTHOR);
-        $user->syncInterests($validatedData['sources'], UserInterestTypes::SOURCE);
+        
+        $this->userService->updateProfile($user, $validatedData);
 
         return $this->return(200, 'Profile updated successfully');
     }
