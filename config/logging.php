@@ -127,6 +127,12 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'kibana' => [
+            'driver' => 'custom',
+            'via' => \App\Logging\KibanaLogger::class,
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
     ],
 
 ];

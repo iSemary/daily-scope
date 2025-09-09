@@ -58,11 +58,17 @@ It fetches articles from multiple external sources, stores them locally, and exp
 -   **Nginx** - Web Server
 -   **PHP-FPM** - Process Manager
 
+### Logging & Monitoring
+
+-   **Kibana** - Log aggregation and visualization
+
 ## Get Started
 
 ### Postman Collection
 
 [Open With Postman](https://www.postman.com/isemary/workspace/daily-scope)
+
+Please note that there are 2 environments available: local and production, which makes it easier for you to verify the results.
 
 ### Installation
 
@@ -90,6 +96,22 @@ It fetches articles from multiple external sources, stores them locally, and exp
 #### 6. Run application local
 
     php artisan serve
+
+#### 7. Configure Kibana Logging (Optional)
+
+For advanced logging and monitoring, you can configure Kibana integration:
+
+1. **Set up environment variables** in your `.env` file:
+   ```env
+   KIBANA_API_KEY=your_api_key_here
+   KIBANA_CLOUD_ID=your_cloud_id_here
+   KIBANA_INDEX=logs
+   ```
+
+2. **Switch logging methods**:
+   - Storage File only: `LOG_STACK=single`
+   - Kibana only: `LOG_STACK=kibana`
+   - Both (default): `LOG_STACK=single,kibana`
 
 ## Docker
 
