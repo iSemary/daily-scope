@@ -85,6 +85,38 @@
         .bg-main {
             background-color: #11607E !important;
         }
+
+        /* Smooth scrolling for anchor links */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Style for anchor links */
+        .markdown-content a[href^="#"] {
+            color: #11607E;
+            text-decoration: none;
+            border-bottom: 1px dotted #11607E;
+            transition: all 0.3s ease;
+        }
+
+        .markdown-content a[href^="#"]:hover {
+            color: #0d4a5f;
+            border-bottom: 1px solid #0d4a5f;
+            text-decoration: none;
+        }
+
+        .markdown-content a[href^="#"].active {
+            color: #0d4a5f;
+            border-bottom: 2px solid #0d4a5f;
+            font-weight: bold;
+        }
+
+        /* Add some padding to sections for better scroll positioning */
+        .markdown-content h2,
+        .markdown-content h3,
+        .markdown-content h4 {
+            scroll-margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -168,14 +200,110 @@
                     // Hide loading, show content
                     loadingElement.style.display = 'none';
                     contentElement.style.display = 'block';
+
+                    setupAnchorNavigation();
+                    setupScrollSpy();
                 })
                 .catch(error => {
                     console.error('Error loading README.md:', error);
 
-                    // Hide loading, show error
                     loadingElement.style.display = 'none';
                     errorElement.style.display = 'block';
                 });
+
+            function setupAnchorNavigation() {
+                const headers = document.querySelectorAll('.markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4');
+                headers.forEach(header => {
+                    if (!header.id) {
+                        const text = header.textContent.toLowerCase()
+                            .replace(/[^a-z0-9\s-]/g, '')
+                            .replace(/\s+/g, '-')
+                            .replace(/-+/g, '-')
+                            .replace(/^-|-$/g, '');
+                        header.id = text;
+                    }
+                });
+
+                const anchorLinks = document.querySelectorAll('.markdown-content a[href^="#"]');
+                
+                anchorLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        const targetId = this.getAttribute('href').substring(1);
+                        const targetElement = document.getElementById(targetId);
+                        
+                        if (targetElement) {
+                            // Custom smooth scroll function
+                            smoothScrollTo(targetElement);
+                        }
+                    });
+                });
+            }
+
+            function smoothScrollTo(targetElement) {
+                const startPosition = window.pageYOffset;
+                const targetPosition = targetElement.offsetTop - 80;
+                const distance = targetPosition - startPosition;
+                const duration = 300;
+                let start = null;
+
+                function animation(currentTime) {
+                    if (start === null) start = currentTime;
+                    const timeElapsed = currentTime - start;
+                    const run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+                    window.scrollTo(0, run);
+                    if (timeElapsed < duration) requestAnimationFrame(animation);
+                }
+
+                requestAnimationFrame(animation);
+            }
+
+            // Easing function for smooth animation
+            function easeInOutQuad(t, b, c, d) {
+                t /= d / 2;
+                if (t < 1) return c / 2 * t * t + b;
+                t--;
+                return -c / 2 * (t * (t - 2) - 1) + b;
+            }
+
+            // Add scroll spy functionality to highlight current section
+            function setupScrollSpy() {
+                const sections = document.querySelectorAll('.markdown-content h2, .markdown-content h3, .markdown-content h4');
+                const navLinks = document.querySelectorAll('.markdown-content a[href^="#"]');
+
+                function updateActiveLink() {
+                    let current = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop - 100;
+                        if (window.pageYOffset >= sectionTop) {
+                            current = section.getAttribute('id');
+                        }
+                    });
+
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + current) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+
+                // Throttled scroll event listener
+                let ticking = false;
+                function onScroll() {
+                    if (!ticking) {
+                        requestAnimationFrame(() => {
+                            updateActiveLink();
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                }
+
+                window.addEventListener('scroll', onScroll);
+                updateActiveLink(); // Initial call
+            }
         });
     </script>
 </body>
